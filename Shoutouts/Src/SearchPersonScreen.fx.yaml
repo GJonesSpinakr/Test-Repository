@@ -1,0 +1,352 @@
+SearchPersonScreen As screen:
+    Height: =Max(App.Height, App.DesignHeight)
+    OnVisible: |-
+        =Collect(TemplateData, {Image: _myProfilePhoto});
+        Set(_selectedUser, First(GalleryUserSearch_2.AllItems));
+    Orientation: =If(SearchPersonScreen.Width < SearchPersonScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= SearchPersonScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Button2 As button:
+        BorderColor: =ColorFade(Button2.Fill, -15%)
+        DisabledBorderColor: =ColorFade(Button2.BorderColor, 70%)
+        DisplayMode: =If(CountRows(GalleryUserSearch_2.AllItems) > 0 And !IsBlank(_selectedUser), DisplayMode.Edit, DisplayMode.Disabled)
+        Fill: =RGBA(0, 100, 142, 1)
+        FocusedBorderColor: =Button2.BorderColor
+        Height: =Button2_2.Height
+        HoverBorderColor: =ColorFade(Button2.BorderColor, 20%)
+        HoverColor: =Button2.Color
+        HoverFill: =ColorFade(Button2.Fill, 20%)
+        OnSelect: |
+            =Set(_newShoutoutStep, _newShoutoutStep + 1); 
+            Navigate(SelectShoutoutScreen, BorderStyle.None)
+        PressedBorderColor: =Button2.Fill
+        PressedColor: =Button2.Fill
+        PressedFill: =Button2.Color
+        RadiusBottomLeft: =5
+        RadiusBottomRight: =5
+        RadiusTopLeft: =5
+        RadiusTopRight: =5
+        Size: =10.5
+        Text: =Upper("Next")
+        Tooltip: ="Go to next screen"
+        Width: =Button2_2.Width
+        X: =Button2_1.X
+        Y: =Button2_2.Y
+        ZIndex: =5
+
+    Header_2 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =12
+
+        RectHeader_2 As rectangle:
+            DisabledFill: =RectHeader_2.Fill
+            DisplayMode: =DisplayMode.View
+            Fill: =RGBA(40, 40, 40, 1)
+            FocusedBorderColor: =RectHeader_2.BorderColor
+            FocusedBorderThickness: =0
+            HoverFill: =RectHeader_2.Fill
+            PressedFill: =RectHeader_2.Fill
+            Width: =Parent.Width
+            ZIndex: =1
+
+        icon9 As icon.Cancel:
+            AccessibleLabel: ="Cancel"
+            Color: =Color.White
+            DisabledFill: =icon9.Fill
+            FocusedBorderColor: =icon9.BorderColor
+            Height: =icon9.Width
+            HoverBorderColor: =ColorFade(icon9.BorderColor, 20%)
+            HoverColor: =ColorFade(icon9.Color, 20%)
+            HoverFill: =icon9.Fill
+            Icon: =Icon.Cancel
+            OnSelect: |
+                =Set(_newShoutoutStep, 0);
+                Navigate(ActivityFeedScreen, BorderStyle.None)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            PressedBorderColor: =ColorFade(icon9.BorderColor, -20%)
+            PressedColor: =ColorFade(icon9.Color, -20%)
+            PressedFill: =icon9.Fill
+            TabIndex: =0
+            Tooltip: =icon9.AccessibleLabel
+            X: =1282
+            Y: =18
+            ZIndex: =4
+
+        GalleryProgress As gallery.galleryHorizontal:
+            AccessibleLabel: ="Progress bar"
+            DisabledBorderColor: =GalleryProgress.BorderColor
+            DisabledFill: =GalleryProgress.Fill
+            DisplayMode: =DisplayMode.View
+            Height: =80
+            HoverBorderColor: =GalleryProgress.BorderColor
+            HoverFill: =GalleryProgress.Fill
+            ItemAccessibleLabel: |-
+                =ThisItem.Value & " Step " &
+                If(_newShoutoutStep > ThisItem.Step, "Complete",
+                    If(_newShoutoutStep < ThisItem.Step, "Not Complete", "Active"))
+            Items: =ProgressBarData
+            LoadingSpinnerColor: =GalleryProgress.BorderColor
+            PressedBorderColor: =GalleryProgress.BorderColor
+            PressedFill: =GalleryProgress.Fill
+            Selectable: =false
+            TemplateSize: =120
+            Width: =(GalleryProgress.TemplateWidth + GalleryProgress.TemplatePadding+1.5) * CountRows(GalleryProgress.AllItems)
+            X: =Parent.Width / 2 - GalleryProgress.Width / 2
+            Y: =RectHeader_3.Height / 2 - GalleryProgress.Height /2
+            ZIndex: =6
+
+            Label4_4 As label:
+                Align: =LayoutAlignItems.Center
+                Color: =RGBA(255, 255, 255, 1)
+                FocusedBorderColor: =Label4_4.BorderColor
+                FocusedBorderThickness: =02
+                FontWeight: =If(ThisItem.Step = _newShoutoutStep, FontWeight.Bold, FontWeight.Normal)
+                Height: =70
+                HoverBorderColor: =Label4_4.BorderColor
+                HoverColor: =Label4_4.Color
+                HoverFill: =Label4_4.Fill
+                OnSelect: =Select(Parent)
+                PaddingLeft: =1.5
+                PaddingRight: =1.5
+                PaddingTop: =35
+                PressedBorderColor: =Label4_4.BorderColor
+                PressedColor: =Label4_4.Color
+                PressedFill: =Label4_4.Fill
+                Size: =10.5
+                Text: =ThisItem.Value
+                Width: =Parent.TemplateWidth - Label4_4.X * 2
+                X: =3
+                ZIndex: =1
+
+            Rectangle2_2 As rectangle:
+                DisabledFill: =Rectangle2_2.Fill
+                Fill: =If(ThisItem.Step = _newShoutoutStep, RGBA(0, 174, 239, 1),RGBA(183,183,183,1))
+                FocusedBorderColor: =Rectangle2_2.BorderColor
+                Height: =12
+                HoverFill: =Rectangle2_2.Fill
+                OnSelect: =
+                PressedFill: =Rectangle2_2.Fill
+                Visible: =ThisItem.Step >= _newShoutoutStep
+                Width: =Parent.TemplateWidth
+                Y: =18
+                ZIndex: =2
+
+            icon10_3 As icon.Check:
+                AccessibleLabel: ="This section completed"
+                Color: =RGBA(0, 174, 239, 1)
+                DisabledFill: =icon10_3.Fill
+                FocusedBorderColor: =icon10_3.BorderColor
+                Height: =35
+                HoverBorderColor: =ColorFade(icon10_3.BorderColor, 20%)
+                HoverColor: =ColorFade(icon10_3.Color, 20%)
+                HoverFill: =icon10_3.Fill
+                Icon: =Icon.Check
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(icon10_3.BorderColor, -20%)
+                PressedColor: =ColorFade(icon10_3.Color, -20%)
+                PressedFill: =icon10_3.Fill
+                Visible: =ThisItem.Step < _newShoutoutStep
+                X: =Parent.TemplateWidth / 2 - icon10_3.Width / 2
+                Y: =6
+                ZIndex: =3
+
+    MainPanel As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =12
+
+        Label7 As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =Label7.BorderColor
+            FontWeight: =FontWeight.Bold
+            HoverBorderColor: =Label7.BorderColor
+            HoverColor: =Label7.Color
+            HoverFill: =Label7.Fill
+            PressedBorderColor: =Label7.BorderColor
+            PressedColor: =Label7.Color
+            PressedFill: =Label7.Fill
+            Role: =TextRole.Heading2
+            Size: =18
+            Text: ="Search Person"
+            Width: =180
+            X: =595+0
+            Y: =114+0
+            ZIndex: =7
+
+        SearchInputBox_4 As text:
+            AccessibleLabel: ="Search users in your organization"
+            BorderColor: =RGBA(120, 120, 120, 1)
+            BorderThickness: =1
+            Clear: =true
+            Default: =
+            FocusedBorderColor: =SearchInputBox_4.BorderColor
+            FocusedBorderThickness: =1
+            HintText: ="Search"
+            HoverFill: =SearchInputBox_4.Fill
+            OnChange: =Set(_selectedUser, First(GalleryUserSearch_2.AllItems))
+            OnSelect: =
+            PaddingLeft: =40
+            PaddingRight: =0
+            PressedBorderColor: =SearchInputBox_4.HoverBorderColor
+            PressedColor: =SearchInputBox_4.Color
+            PressedFill: =SearchInputBox_4.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Width: =565
+            X: =402
+            Y: =169
+            ZIndex: =8
+
+        icon5_2 As icon.Search:
+            Color: =RGBA(120, 120, 120, 1)
+            DisabledFill: =icon5_2.Fill
+            FocusedBorderColor: =icon5_2.BorderColor
+            Height: =40
+            HoverBorderColor: =ColorFade(icon5_2.BorderColor, 20%)
+            HoverColor: =ColorFade(icon5_2.Color, 20%)
+            HoverFill: =icon5_2.Fill
+            Icon: =Icon.Search
+            PaddingBottom: =8
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =8
+            PressedBorderColor: =ColorFade(icon5_2.BorderColor, -20%)
+            PressedColor: =ColorFade(icon5_2.Color, -20%)
+            PressedFill: =icon5_2.Fill
+            Width: =40
+            X: =402
+            Y: =169
+            ZIndex: =9
+
+        Label15_6 As label:
+            FocusedBorderColor: =Label15_6.BorderColor
+            FontWeight: =FontWeight.Bold
+            HoverBorderColor: =Label15_6.BorderColor
+            HoverColor: =Label15_6.Color
+            HoverFill: =Label15_6.Fill
+            PressedBorderColor: =Label15_6.BorderColor
+            PressedColor: =Label15_6.Color
+            PressedFill: =Label15_6.Fill
+            Size: =10.5
+            Text: ="TOP CONTACTS"
+            X: =402
+            Y: =220
+            ZIndex: =10
+
+        GalleryUserSearch_2 As gallery.galleryVertical:
+            AccessibleLabel: ="Search user gallery"
+            Default: =First(GalleryUserSearch_2.AllItems)
+            DisabledBorderColor: =GalleryUserSearch_2.BorderColor
+            DisabledFill: =GalleryUserSearch_2.Fill
+            Height: =393
+            HoverBorderColor: =GalleryUserSearch_2.BorderColor
+            HoverFill: =GalleryUserSearch_2.Fill
+            ItemAccessibleLabel: |-
+                =ThisItem.DisplayName & 
+                If(_selectedUser.Id = ThisItem.Id, " Selected", " Not Selected")
+            Items: |-
+                =If(IsBlank(Trim(SearchInputBox_4.Text)), MyRelevantPeople, Office365Users.SearchUser({searchTerm: SearchInputBox_4.Text, top: 20}))
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =GalleryUserSearch_2.BorderColor
+            OnSelect: |-
+                =Set(_selectedUser, ThisItem);
+                Set(_selectedUserPhoto, ImageUser_1.Image)
+            PressedBorderColor: =GalleryUserSearch_2.BorderColor
+            PressedFill: =GalleryUserSearch_2.Fill
+            ShowNavigation: =true
+            ShowScrollbar: =false
+            TemplateFill: =RGBA(255, 255, 255, 1)
+            TemplatePadding: =10
+            TemplateSize: =87
+            Width: =585
+            WrapCount: =2
+            X: =392
+            Y: =260
+            ZIndex: =11
+
+            Rectangle3_2 As rectangle:
+                BorderColor: =RGBA(204, 204, 204, 1)
+                BorderThickness: =1
+                DisabledFill: =Rectangle3_2.Fill
+                Fill: =If(_selectedUser.Id = ThisItem.Id, RGBA(0, 100, 142, 1),  RGBA(250,250,250,1))
+                FocusedBorderColor: =Rectangle3_2.BorderColor
+                Height: =84
+                HoverFill: =Rectangle3_2.Fill
+                OnSelect: =Select(Parent)
+                PressedFill: =Rectangle3_2.Fill
+                Width: =277.5
+                ZIndex: =1
+
+            ImageUser_1 As image:
+                AccessibleLabel: ="User image"
+                FocusedBorderColor: =ImageUser_1.BorderColor
+                Height: =50
+                HoverBorderColor: =ColorFade(ImageUser_1.BorderColor, 20%)
+                HoverFill: =ColorFade(ImageUser_1.Fill, 20%)
+                Image: |-
+                    =//check if app already cached user photo in MyRelevantPeople collection, then check whether user has photo, and retrieve it from Office365Users
+                    If(ThisItem.Id in MyRelevantPeople.Id, LookUp(MyRelevantPeople, Id = ThisItem.Id).Photo, Office365Users.UserPhotoMetadata(ThisItem.Id).HasPhoto, Office365Users.UserPhoto(ThisItem.Id), 'profilepic-generic-user')
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(ImageUser_1.BorderColor, -20%)
+                PressedFill: =ColorFade(ImageUser_1.Fill, -20%)
+                RadiusBottomLeft: =25
+                RadiusBottomRight: =25
+                RadiusTopLeft: =25
+                RadiusTopRight: =25
+                Width: =50
+                X: =23
+                Y: =17
+                ZIndex: =2
+
+            LabelName_1 As label:
+                Color: =If(_selectedUser.Id = ThisItem.Id, Color.White, RGBA(0, 100, 142, 1))
+                FocusedBorderColor: =LabelName_1.BorderColor
+                FocusedBorderThickness: =2
+                FontWeight: =FontWeight.Semibold
+                Height: =32
+                HoverBorderColor: =LabelName_1.BorderColor
+                HoverColor: =LabelName_1.Color
+                HoverFill: =LabelName_1.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =LabelName_1.BorderColor
+                PressedColor: =LabelName_1.Color
+                PressedFill: =LabelName_1.Fill
+                Size: =10.5
+                TabIndex: =0
+                Text: =ThisItem.DisplayName
+                Width: =Parent.TemplateWidth - LabelName_1.X - 5
+                X: =89
+                Y: =8
+                ZIndex: =3
+
+            LabelJob_1 As label:
+                Color: =If(_selectedUser.Id = ThisItem.Id, Color.White, RGBA(47, 41, 43, 1))
+                FocusedBorderColor: =LabelJob_1.BorderColor
+                FocusedBorderThickness: =02
+                Height: =27
+                HoverBorderColor: =LabelJob_1.BorderColor
+                HoverColor: =LabelJob_1.Color
+                HoverFill: =LabelJob_1.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =LabelJob_1.BorderColor
+                PressedColor: =LabelJob_1.Color
+                PressedFill: =LabelJob_1.Fill
+                Size: =9
+                Text: =ThisItem.JobTitle
+                Width: =Parent.TemplateWidth - LabelJob_1.X - 5
+                X: =89
+                Y: =40
+                ZIndex: =4
+

@@ -1,0 +1,135 @@
+Setup As screen:
+    Height: =Max(App.Height, App.DesignHeight)
+    Orientation: =If(Setup.Width < Setup.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= Setup.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Label1 As label:
+        Fill: =RGBA(240, 240, 240, 1)
+        FocusedBorderColor: =Label1.BorderColor
+        Height: =768
+        HoverBorderColor: =Label1.BorderColor
+        HoverColor: =Label1.Color
+        HoverFill: =Label1.Fill
+        PressedBorderColor: =Label1.BorderColor
+        PressedColor: =Label1.Color
+        PressedFill: =Label1.Fill
+        Text: =
+        Width: =86
+        X: =640
+        ZIndex: =1
+
+    Label3 As label:
+        Align: =LayoutAlignItems.Center
+        Fill: =RGBA(240, 240, 240, 1)
+        FocusedBorderColor: =Label3.BorderColor
+        FontWeight: =FontWeight.Semibold
+        Height: =70
+        HoverBorderColor: =Label3.BorderColor
+        HoverColor: =Label3.Color
+        HoverFill: =Label3.Fill
+        PressedBorderColor: =Label3.BorderColor
+        PressedColor: =Label3.Color
+        PressedFill: =Label3.Fill
+        Size: =28
+        Text: ="Collections"
+        Width: =640
+        ZIndex: =2
+
+    HtmlText3 As htmlViewer:
+        Height: =314
+        HoverBorderColor: =HtmlText3.BorderColor
+        HtmlText: |-
+            ="<p><strong>AllShoutOutTypes - </strong>List of all the Shoutout Types in the app. This list comes from an internal collection initialized in the OnStart property of the first screen. It includes the Name, Description, Icons, and colors for each Shoutout Type.</p>" &
+            "<p><strong>MyRelevantPeople - </strong>A collection of your most frequent contacts.</p>" &
+            "<p><strong>Templates - </strong>A collection of templates for emailing Shoutout recipients. Currently contains a single email HTML template.</p>" &
+            "<p><strong>TemplateData - </strong>A collection of data specific to the currently composed Shoutout to be substituted into the email template.</p>" & 
+            "<p><strong>ProgressBarData - </strong>A collection of data used in the progress bar gallery on the send shoutout pages</p>"
+        PressedBorderColor: =HtmlText3.BorderColor
+        Size: =12
+        Width: =640
+        Y: =70
+        ZIndex: =3
+
+    Label3_1 As label:
+        Align: =LayoutAlignItems.Center
+        Fill: =RGBA(240, 240, 240, 1)
+        FocusedBorderColor: =Label3_1.BorderColor
+        FontWeight: =FontWeight.Semibold
+        Height: =70
+        HoverBorderColor: =Label3_1.BorderColor
+        HoverColor: =Label3_1.Color
+        HoverFill: =Label3_1.Fill
+        PressedBorderColor: =Label3_1.BorderColor
+        PressedColor: =Label3_1.Color
+        PressedFill: =Label3_1.Fill
+        Size: =28
+        Text: ="Variables"
+        Width: =640
+        Y: =384
+        ZIndex: =4
+
+    HtmlText3_3 As htmlViewer:
+        Height: =314
+        HoverBorderColor: =HtmlText3_3.BorderColor
+        HtmlText: |-
+            ="<p><strong>_myDomain </strong> - Email address domain of current user. Ex: microsoft.com</p>
+            <p><strong>_appURL </strong> - URL of app. Out of box takes user to their powerapps home page.</p>
+            <p><strong>_guideStep </strong> - Current progression of IntroScreen tutorial.</p>
+            <p><strong>_activityFeedFilter</strong> - Current selection of activity feed filter from footer menu on ActivityFeedScreen.</p>
+            <p><strong>_myProfile</strong> - Current user's Office365 profile.</p>
+            <p><strong>_myProfilePhoto</strong> - Current user's Office365 profile photo.</p>
+            <p><strong>_selectedShoutout</strong> - Currently selected Shoutout.</p>
+            <p><strong>_selectedUser</strong> - Currently selected user.</p>
+            <p><strong>_selectedUserPhoto</strong> - Currently selected user photo.</p>
+            <p><strong>_sendShoutout</strong> - Boolean used to determine whether to send shoutout information from SendConfirmationScreen (OnVisible property).</p>
+            <p><strong>_emailRecipients</strong> - String of email recipients to receive Shoutout.</p>
+            <p><strong>_deletingShoutout</strong> - Boolean used to determine whether to confirm deletion of a Shoutout.</p>
+            <p><strong>_newShoutoutStep</strong> - Current user progress in creating a new Shoutout.</p>
+            <p><strong>_shownImagesActivity</strong> - String of unique image URLs used to determine which images are being shown on the ActivityFeedScreen.</p>
+            <p><strong>_shownImagesPerson</strong> - String of unique image URLs used to determine which images are being shown on the PersonScreen.</p>
+            <p><strong>_shoutoutToDelete</strong> - Tracks which Shoutout a user selected to delete.</p>
+            <p><strong>_personTabSelection</strong> - The currently selected filter on the PersonScreen.</p>"
+        PressedBorderColor: =HtmlText3_3.BorderColor
+        Size: =12
+        Width: =640
+        Y: =454
+        ZIndex: =5
+
+    Label3_6 As label:
+        Align: =LayoutAlignItems.Center
+        Fill: =RGBA(240, 240, 240, 1)
+        FocusedBorderColor: =Label3_6.BorderColor
+        FontWeight: =FontWeight.Semibold
+        Height: =70
+        HoverBorderColor: =Label3_6.BorderColor
+        HoverColor: =Label3_6.Color
+        HoverFill: =Label3_6.Fill
+        PressedBorderColor: =Label3_6.BorderColor
+        PressedColor: =Label3_6.Color
+        PressedFill: =Label3_6.Fill
+        Size: =28
+        Text: ="PowerApp Link In Emails"
+        Width: =640
+        X: =726
+        ZIndex: =6
+
+    HtmlText4 As htmlViewer:
+        Height: =698
+        HoverBorderColor: =HtmlText4.BorderColor
+        HtmlText: |-
+            ="<p>The Shoutouts PowerApp Sends an Email to the recipient and the recipient's manager to let them know a Shoutout was sent.<p>" &
+            "<p>The email contains a link to the PowerApp that allows the user to open the PowerApp directly from the email and view the Shoutout in the PowerApp<p>" &
+            "<p>By default, the link takes a user to the PowerApps web site.</p>" &
+            "<p>If you wish to modify the link to open the PowerApp directly follow these steps:</p>" &
+            "<p>1. Open the <b>IntroScreen</b> and select its <b>OnStart</b> property.</b></p>" &
+            "<p>4. Modify the <b>_appUrl</b> variable so it points to the PowerApp in your PowerApps environment.</p>" &
+            "<p><b>Example:</b></p>" &
+            "<p><i>Set(_appURL, """"https://web.powerapps.com/apps/f89e6354-65aa-442f-961c-0af0022764b1"""");</i><p>"
+        PressedBorderColor: =HtmlText4.BorderColor
+        Size: =12
+        Width: =640
+        X: =726
+        Y: =70
+        ZIndex: =7
+

@@ -1,0 +1,416 @@
+ComposeMessageScreen As screen:
+    Height: =Max(App.Height, App.DesignHeight)
+    OnVisible: =
+    Orientation: =If(ComposeMessageScreen.Width < ComposeMessageScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= ComposeMessageScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Header_4 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =21
+
+        RectHeader_6 As rectangle:
+            DisabledFill: =RectHeader_6.Fill
+            DisplayMode: =DisplayMode.View
+            Fill: =RGBA(40, 40, 40, 1)
+            FocusedBorderColor: =RectHeader_6.BorderColor
+            FocusedBorderThickness: =0
+            Height: =RectHeader_2.Height
+            HoverFill: =RectHeader_6.Fill
+            PressedFill: =RectHeader_6.Fill
+            Width: =Parent.Width
+            ZIndex: =1
+
+        icon9_4 As icon.Cancel:
+            AccessibleLabel: ="Cancel"
+            Color: =Color.White
+            DisabledFill: =icon9_4.Fill
+            FocusedBorderColor: =icon9_4.BorderColor
+            Height: =icon9.Height
+            HoverBorderColor: =ColorFade(icon9_4.BorderColor, 20%)
+            HoverColor: =ColorFade(icon9_4.Color, 20%)
+            HoverFill: =icon9_4.Fill
+            Icon: =Icon.Cancel
+            OnSelect: =Navigate(ActivityFeedScreen, BorderStyle.None)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            PressedBorderColor: =ColorFade(icon9_4.BorderColor, -20%)
+            PressedColor: =ColorFade(icon9_4.Color, -20%)
+            PressedFill: =icon9_4.Fill
+            TabIndex: =0
+            Tooltip: =icon9_4.AccessibleLabel
+            Width: =icon9.Width
+            X: =1280
+            Y: =icon9.Y
+            ZIndex: =4
+
+        Gallery2_6 As gallery.galleryHorizontal:
+            AccessibleLabel: ="Progress bar"
+            DisabledBorderColor: =Gallery2_6.BorderColor
+            DisabledFill: =Gallery2_6.Fill
+            DisplayMode: =DisplayMode.View
+            Height: =GalleryProgress.Height
+            HoverBorderColor: =Gallery2_6.BorderColor
+            HoverFill: =Gallery2_6.Fill
+            ItemAccessibleLabel: |-
+                =ThisItem.Value & " Step " &
+                If(_newShoutoutStep > ThisItem.Step, "Complete",
+                    If(_newShoutoutStep < ThisItem.Step, "Not Complete", "Active"))
+            Items: =ProgressBarData
+            LoadingSpinnerColor: =Gallery2_6.BorderColor
+            PressedBorderColor: =Gallery2_6.BorderColor
+            PressedFill: =Gallery2_6.Fill
+            Selectable: =false
+            TemplateSize: =120
+            Width: =GalleryProgress.Width
+            X: =GalleryProgress.X
+            Y: =GalleryProgress.Y
+            ZIndex: =11
+
+            Label4_8 As label:
+                Align: =LayoutAlignItems.Center
+                Color: =RGBA(255, 255, 255, 1)
+                FocusedBorderColor: =Label4_8.BorderColor
+                FocusedBorderThickness: =02
+                FontWeight: =If(ThisItem.Step = _newShoutoutStep, FontWeight.Bold, FontWeight.Normal)
+                Height: =70
+                HoverBorderColor: =Label4_8.BorderColor
+                HoverColor: =Label4_8.Color
+                HoverFill: =Label4_8.Fill
+                OnSelect: =Select(Parent)
+                PaddingLeft: =1.5
+                PaddingRight: =1.5
+                PaddingTop: =35
+                PressedBorderColor: =Label4_8.BorderColor
+                PressedColor: =Label4_8.Color
+                PressedFill: =Label4_8.Fill
+                Size: =10.5
+                Text: =ThisItem.Value
+                Width: =Parent.TemplateWidth - Label4_8.X * 2
+                X: =3
+                ZIndex: =1
+
+            Rectangle2_6 As rectangle:
+                DisabledFill: =Rectangle2_6.Fill
+                Fill: =If(ThisItem.Step = _newShoutoutStep, RGBA(0, 174, 239, 1),RGBA(183,183,183,1))
+                FocusedBorderColor: =Rectangle2_6.BorderColor
+                Height: =12
+                HoverFill: =Rectangle2_6.Fill
+                OnSelect: =
+                PressedFill: =Rectangle2_6.Fill
+                Visible: =ThisItem.Step >= _newShoutoutStep
+                Width: =Parent.TemplateWidth
+                Y: =18
+                ZIndex: =2
+
+            icon10_5 As icon.Check:
+                AccessibleLabel: ="This section completed"
+                Color: =RGBA(0, 174, 239, 1)
+                DisabledFill: =icon10_5.Fill
+                FocusedBorderColor: =icon10_5.BorderColor
+                Height: =35
+                HoverBorderColor: =ColorFade(icon10_5.BorderColor, 20%)
+                HoverColor: =ColorFade(icon10_5.Color, 20%)
+                HoverFill: =icon10_5.Fill
+                Icon: =Icon.Check
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(icon10_5.BorderColor, -20%)
+                PressedColor: =ColorFade(icon10_5.Color, -20%)
+                PressedFill: =icon10_5.Fill
+                Visible: =ThisItem.Step < _newShoutoutStep
+                X: =Parent.TemplateWidth / 2 - icon10_5.Width / 2
+                Y: =6
+                ZIndex: =3
+
+    SubHeader_1 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =21
+
+        Rectangle4_3 As rectangle:
+            DisabledFill: =Rectangle4_3.Fill
+            Fill: =RGBA(245, 245, 245, 1)
+            FocusedBorderColor: =Rectangle4_3.BorderColor
+            Height: =60
+            HoverFill: =Rectangle4_3.Fill
+            PressedFill: =Rectangle4_3.Fill
+            Width: =Parent.Width
+            Y: =100
+            ZIndex: =6
+
+        Image4_5 As image:
+            FocusedBorderColor: =Image4_5.BorderColor
+            Height: =80
+            HoverBorderColor: =ColorFade(Image4_5.BorderColor, 20%)
+            HoverFill: =ColorFade(Image4_5.Fill, 20%)
+            Image: =_selectedUserPhoto
+            PressedBorderColor: =ColorFade(Image4_5.BorderColor, -20%)
+            PressedFill: =ColorFade(Image4_5.Fill, -20%)
+            RadiusBottomLeft: =40
+            RadiusBottomRight: =40
+            RadiusTopLeft: =40
+            RadiusTopRight: =40
+            Width: =80
+            X: =Gallery2_6.X - Image4_5.Width
+            Y: =88
+            ZIndex: =7
+
+        Label6_6 As label:
+            FocusedBorderColor: =Label6_6.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =27
+            HoverBorderColor: =Label6_6.BorderColor
+            HoverColor: =Label6_6.Color
+            HoverFill: =Label6_6.Fill
+            PaddingBottom: =2
+            PressedBorderColor: =Label6_6.BorderColor
+            PressedColor: =Label6_6.Color
+            PressedFill: =Label6_6.Fill
+            Text: =_selectedUser.DisplayName
+            VerticalAlign: =VerticalAlign.Bottom
+            Width: =600
+            Wrap: =false
+            X: =Image4_5.X + Image4_5.Width + 30
+            Y: =100
+            ZIndex: =8
+
+        Label6_7 As label:
+            FocusedBorderColor: =Label6_7.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =27
+            HoverBorderColor: =Label6_7.BorderColor
+            HoverColor: =Label6_7.Color
+            HoverFill: =Label6_7.Fill
+            PressedBorderColor: =Label6_7.BorderColor
+            PressedColor: =Label6_7.Color
+            PressedFill: =Label6_7.Fill
+            Size: =9
+            Text: =_selectedUser.JobTitle
+            Width: =600
+            Wrap: =false
+            X: =Image4_5.X + Image4_5.Width + 30
+            Y: =129
+            ZIndex: =9
+
+        Image10 As image:
+            FocusedBorderColor: =Image10.BorderColor
+            Height: =50
+            HoverBorderColor: =ColorFade(Image10.BorderColor, 20%)
+            HoverFill: =ColorFade(Image10.Fill, 20%)
+            Image: =_selectedShoutout.Icon_Color
+            PressedBorderColor: =ColorFade(Image10.BorderColor, -20%)
+            PressedFill: =ColorFade(Image10.Fill, -20%)
+            Width: =50
+            X: =405
+            Y: =105
+            ZIndex: =12
+
+    MainPanel_2 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =21
+
+        Label7_2 As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =Label7_2.BorderColor
+            FontWeight: =FontWeight.Bold
+            HoverBorderColor: =Label7_2.BorderColor
+            HoverColor: =Label7_2.Color
+            HoverFill: =Label7_2.Fill
+            PressedBorderColor: =Label7_2.BorderColor
+            PressedColor: =Label7_2.Color
+            PressedFill: =Label7_2.Fill
+            Size: =18
+            Text: ="Your Personal Message and Photo"
+            Width: =454
+            X: =Parent.Width / 2 - Label7_2.Width / 2
+            Y: =171
+            ZIndex: =13
+
+        Label10 As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =Label10.BorderColor
+            Height: =30
+            HoverBorderColor: =Label10.BorderColor
+            HoverColor: =Label10.Color
+            HoverFill: =Label10.Fill
+            PressedBorderColor: =Label10.BorderColor
+            PressedColor: =Label10.Color
+            PressedFill: =Label10.Fill
+            Size: =10.5
+            Text: ="Enter your personal Shoutout message"
+            Width: =266
+            X: =549
+            Y: =220
+            ZIndex: =14
+
+        MessageInputBox As text:
+            AccessibleLabel: =Label10.Text
+            BorderColor: =RGBA(120, 120, 120, 1)
+            BorderThickness: =1
+            Clear: =true
+            Default: =
+            FocusedBorderColor: =MessageInputBox.BorderColor
+            FocusedBorderThickness: =1
+            Height: =145
+            HintText: =""
+            HoverFill: =MessageInputBox.Fill
+            Mode: =TextMode.MultiLine
+            OnChange: =
+            OnSelect: =
+            PaddingLeft: =5
+            PressedBorderColor: =MessageInputBox.HoverBorderColor
+            PressedColor: =MessageInputBox.Color
+            PressedFill: =MessageInputBox.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =10
+            Width: =565
+            X: =Parent.Width / 2 - MessageInputBox.Width / 2
+            Y: =255
+            ZIndex: =15
+
+        Label10_1 As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =Label10_1.BorderColor
+            Height: =30
+            HoverBorderColor: =Label10_1.BorderColor
+            HoverColor: =Label10_1.Color
+            HoverFill: =Label10_1.Fill
+            PressedBorderColor: =Label10_1.BorderColor
+            PressedColor: =Label10_1.Color
+            PressedFill: =Label10_1.Fill
+            Size: =10.5
+            Text: ="Send a picture with your Shoutout (optional)"
+            Width: =325
+            X: =Parent.Width / 2 - Label10_1.Width / 2
+            Y: =405
+            ZIndex: =16
+
+        UploadedImage1 As image:
+            FocusedBorderColor: =UploadedImage1.BorderColor
+            Height: =185
+            HoverBorderColor: =ColorFade(UploadedImage1.BorderColor, 20%)
+            HoverFill: =ColorFade(UploadedImage1.Fill, 20%)
+            Image: =If(!IsBlank(AddMediaButton1.Media), AddMediaButton1.Media)
+            ImagePosition: =ImagePosition.Fill
+            PressedBorderColor: =ColorFade(UploadedImage1.BorderColor, -20%)
+            PressedFill: =ColorFade(UploadedImage1.Fill, -20%)
+            Width: =AddMediaButton1.Width
+            X: =AddMediaButton1.X
+            Y: =475
+            ZIndex: =18
+
+        AddMediaButton1 As addMedia:
+            AccessibleLabel: =Concatenate(Label10_1.Text, ", ", If(IsBlank(AddMediaButton1.Media), AddMediaButton1.Text, AddMediaButton1.ChangePictureText))
+            BorderColor: =RGBA(161, 161, 161, 1)
+            BorderThickness: =1
+            ChangePictureText: =Upper("Change Picture")
+            FocusedBorderColor: =AddMediaButton1.BorderColor
+            Height: =35
+            HoverBorderColor: =ColorFade(AddMediaButton1.BorderColor, 20%)
+            HoverColor: =AddMediaButton1.Color
+            HoverFill: =ColorFade(AddMediaButton1.Fill, 20%)
+            PressedBorderColor: =ColorFade(AddMediaButton1.BorderColor, -20%)
+            PressedColor: =AddMediaButton1.Color
+            PressedFill: =ColorFade(AddMediaButton1.Fill, -20%)
+            Size: =10.5
+            Text: =Upper("Upload photo")
+            X: =Parent.Width / 2 - AddMediaButton1.Width / 2
+            Y: =435
+            ZIndex: =19
+
+        Button2_11 As button:
+            BorderColor: =ColorFade(Button2_11.Fill, -15%)
+            DisabledBorderColor: =ColorFade(Button2_11.BorderColor, 70%)
+            Fill: =RGBA(0, 100, 142, 1)
+            FocusedBorderColor: =Button2_11.BorderColor
+            Height: =35
+            HoverBorderColor: =ColorFade(Button2_11.BorderColor, 20%)
+            HoverColor: =Button2_11.Color
+            HoverFill: =ColorFade(Button2_11.Fill, 20%)
+            OnSelect: =Reset(AddMediaButton1)
+            PressedBorderColor: =Button2_11.Fill
+            PressedColor: =Button2_11.Fill
+            PressedFill: =Button2_11.Color
+            RadiusBottomLeft: =5
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =5
+            Size: =10.5
+            Text: =Upper("Delete photo")
+            Visible: =!IsBlank(AddMediaButton1.Media)
+            Width: =328
+            X: =520
+            Y: =660
+            ZIndex: =20
+
+    Nav_1 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =21
+
+        Button2_7 As button:
+            BorderColor: =ColorFade(Button2_7.Fill, -15%)
+            DisabledBorderColor: =ColorFade(Button2_7.BorderColor, 70%)
+            DisplayMode: =If(IsBlank(Trim(MessageInputBox.Text)) && IsBlank(AddMediaButton1.Media), DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 100, 142, 1)
+            FocusedBorderColor: =Button2_7.BorderColor
+            Height: =Button2_2.Height
+            HoverBorderColor: =ColorFade(Button2_7.BorderColor, 20%)
+            HoverColor: =Button2_7.Color
+            HoverFill: =ColorFade(Button2_7.Fill, 20%)
+            OnSelect: =Set(_newShoutoutStep, _newShoutoutStep + 1); Navigate(ReviewScreen, BorderStyle.None)
+            PressedBorderColor: =Button2_7.Fill
+            PressedColor: =Button2_7.Fill
+            PressedFill: =Button2_7.Color
+            RadiusBottomLeft: =5
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =5
+            Size: =10.5
+            Text: =Upper("Next")
+            Tooltip: ="Got to next screen"
+            Width: =Button2_8.Width
+            X: =Button2_1.X
+            Y: =Button2_8.Y
+            ZIndex: =5
+
+        Button2_8 As button:
+            BorderColor: =ColorFade(Button2_8.Fill, -15%)
+            DisabledBorderColor: =ColorFade(Button2_8.BorderColor, 70%)
+            Fill: =RGBA(0, 100, 142, 1)
+            FocusedBorderColor: =Button2_8.BorderColor
+            Height: =Button2_2.Height
+            HoverBorderColor: =ColorFade(Button2_8.BorderColor, 20%)
+            HoverColor: =Button2_8.Color
+            HoverFill: =ColorFade(Button2_8.Fill, 20%)
+            OnSelect: =Set(_newShoutoutStep, _newShoutoutStep - 1); Navigate(SelectShoutoutScreen, BorderStyle.None)
+            PressedBorderColor: =Button2_8.Fill
+            PressedColor: =Button2_8.Fill
+            PressedFill: =Button2_8.Color
+            RadiusBottomLeft: =5
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =5
+            Size: =10.5
+            Text: =Upper("Back")
+            Tooltip: ="Go to previous screen"
+            Width: =Button2_2.Width
+            X: =Button2_2.X
+            Y: =Button2_2.Y
+            ZIndex: =10
+

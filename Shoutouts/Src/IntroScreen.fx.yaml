@@ -1,0 +1,366 @@
+IntroScreen As screen:
+    Fill: =RGBA(255, 255, 255, 1)
+    Height: =Max(App.Height, App.DesignHeight)
+    OnHidden: =Set(_guideStep, 1)
+    OnVisible: =
+    Orientation: =If(IntroScreen.Width < IntroScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= IntroScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    LeftPane_2 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =18
+
+        RectBkg As rectangle:
+            DisabledFill: =RectBkg.Fill
+            Fill: =RGBA(240, 240, 240, 1)
+            FocusedBorderColor: =RectBkg.BorderColor
+            FocusedBorderThickness: =0
+            Height: =Parent.Height
+            HoverFill: =RectBkg.Fill
+            PressedFill: =RectBkg.Fill
+            Width: =Parent.Width / 2
+            ZIndex: =3
+
+        BtnNext As button:
+            BorderColor: =BtnNext.Fill
+            DisabledBorderColor: =ColorFade(BtnNext.BorderColor, 70%)
+            Fill: =RGBA(0, 123, 182, 1)
+            FocusedBorderColor: =Color.Black
+            FontWeight: =FontWeight.Bold
+            Height: =34
+            HoverBorderColor: =ColorFade(BtnNext.BorderColor, 20%)
+            HoverColor: =BtnNext.Color
+            HoverFill: =ColorFade(BtnNext.Fill, 20%)
+            OnSelect: =If(_guideStep<4,Set(_guideStep,_guideStep+1),Navigate(ActivityFeedScreen,BorderStyle.None));Set(_activeGuideStep,LookUp(NavigationGallery.AllItems,Step=NavigationGallery.Selected.Step+1))
+            PressedBorderColor: =BtnNext.Fill
+            PressedColor: =BtnNext.Fill
+            PressedFill: =BtnNext.Color
+            RadiusBottomLeft: =5
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =5
+            Size: =10
+            Text: ="NEXT"
+            Tooltip: =BtnNext.Text
+            Width: =108
+            X: =Parent.Width/4 - BtnNext.Width/2
+            Y: =513
+            ZIndex: =4
+
+        TextTutorial As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =TextTutorial.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =120
+            HoverBorderColor: =TextTutorial.BorderColor
+            HoverColor: =TextTutorial.Color
+            HoverFill: =TextTutorial.Fill
+            LineHeight: =1.6
+            Live: =Live.Assertive
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            PressedBorderColor: =TextTutorial.BorderColor
+            PressedColor: =TextTutorial.Color
+            PressedFill: =TextTutorial.Fill
+            Size: =22.5
+            Text: ="Use Shoutouts to tell your colleagues how great they are!"
+            Width: =550
+            X: =Parent.Width/4 - TextTutorial.Width/2
+            Y: =344
+            ZIndex: =5
+
+        LeftImage As image:
+            ApplyEXIFOrientation: =false
+            FocusedBorderColor: =LeftImage.BorderColor
+            FocusedBorderThickness: =0
+            Height: =96
+            HoverBorderColor: =ColorFade(LeftImage.BorderColor, 20%)
+            HoverFill: =ColorFade(LeftImage.Fill, 20%)
+            Image: =LookUp(NavigationGallery.AllItems, Step = _guideStep).icon
+            PressedBorderColor: =ColorFade(LeftImage.BorderColor, -20%)
+            PressedFill: =ColorFade(LeftImage.Fill, -20%)
+            Width: =96
+            X: =294
+            Y: =223
+            ZIndex: =6
+
+        NavigationGallery As gallery.galleryHorizontal:
+            AccessibleLabel: ="Navigation gallery"
+            Default: =LookUp(AllGuideSteps, Step = _guideStep)
+            DisabledBorderColor: =NavigationGallery.BorderColor
+            DisabledFill: =NavigationGallery.Fill
+            Height: =66
+            HoverBorderColor: =NavigationGallery.BorderColor
+            HoverFill: =NavigationGallery.Fill
+            ItemAccessibleLabel: ="Guide step " & ThisItem.Step
+            Items: =AllGuideSteps
+            LoadingSpinnerColor: =NavigationGallery.BorderColor
+            OnSelect: =Set(_guideStep, ThisItem.Step)
+            PressedBorderColor: =NavigationGallery.BorderColor
+            PressedFill: =NavigationGallery.Fill
+            TemplateSize: =35
+            Width: =165
+            X: =Parent.Width/4 - NavigationGallery.Width/2
+            Y: =19
+            ZIndex: =7
+
+            Circle1 As circle:
+                AccessibleLabel: ="Navigation step"
+                BorderColor: =RGBA(77, 77, 77, 1)
+                BorderThickness: =2
+                DisabledFill: =Circle1.Fill
+                Fill: =If(_guideStep >= ThisItem.Step, RGBA(0, 123, 182, 1), RGBA(0,0,0,0))
+                FocusedBorderColor: =Color.Black
+                FocusedBorderThickness: =4
+                Height: =24
+                HoverFill: =Circle1.Fill
+                OnSelect: =Select(Parent)
+                PressedFill: =Circle1.Fill
+                TabIndex: =0
+                Width: =24
+                X: =5
+                Y: =16
+                ZIndex: =1
+
+        icon2_1 As icon.Camera:
+            Color: =RGBA(0,0,0,1)
+            DisabledFill: =icon2_1.Fill
+            FocusedBorderColor: =icon2_1.BorderColor
+            Height: =78
+            HoverBorderColor: =ColorFade(icon2_1.BorderColor, 20%)
+            HoverColor: =ColorFade(icon2_1.Color, 20%)
+            HoverFill: =icon2_1.Fill
+            Icon: =Icon.Camera
+            PressedBorderColor: =ColorFade(icon2_1.BorderColor, -20%)
+            PressedColor: =ColorFade(icon2_1.Color, -20%)
+            PressedFill: =icon2_1.Fill
+            Visible: =_guideStep = 3
+            Width: =95
+            X: =Parent.Width/4 - icon2_1.Width/2
+            Y: =223
+            ZIndex: =8
+
+        icon1_1 As icon.Mail:
+            Color: =RGBA(0,0,0,1)
+            DisabledFill: =icon1_1.Fill
+            FocusedBorderColor: =icon1_1.BorderColor
+            Height: =91
+            HoverBorderColor: =ColorFade(icon1_1.BorderColor, 20%)
+            HoverColor: =ColorFade(icon1_1.Color, 20%)
+            HoverFill: =icon1_1.Fill
+            Icon: =Icon.Mail
+            PressedBorderColor: =ColorFade(icon1_1.BorderColor, -20%)
+            PressedColor: =ColorFade(icon1_1.Color, -20%)
+            PressedFill: =icon1_1.Fill
+            Visible: =_guideStep = 4
+            Width: =120
+            X: =Parent.Width/4 - icon1_1.Width/2
+            Y: =223
+            ZIndex: =9
+
+    RightPane_2 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =18
+
+        RectBkg_1 As rectangle:
+            DisabledFill: =RectBkg_1.Fill
+            Fill: =RGBA(77, 77, 77, 1)
+            FocusedBorderColor: =RectBkg_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =Parent.Height
+            HoverFill: =RectBkg_1.Fill
+            PressedFill: =RectBkg_1.Fill
+            Visible: =_guideStep = 2 || _guideStep = 4
+            Width: =Parent.Width / 2
+            X: =Parent.Width / 2
+            ZIndex: =1
+
+        ImageTutorial As image:
+            ApplyEXIFOrientation: =false
+            FocusedBorderColor: =ImageTutorial.BorderColor
+            FocusedBorderThickness: =0
+            Height: =LookUp(NavigationGallery.AllItems, Step = _guideStep).Height
+            HoverBorderColor: =ColorFade(ImageTutorial.BorderColor, 20%)
+            HoverFill: =ColorFade(ImageTutorial.Fill, 20%)
+            Image: =LookUp(NavigationGallery.AllItems, Step = _guideStep).Image
+            PressedBorderColor: =ColorFade(ImageTutorial.BorderColor, -20%)
+            PressedFill: =ColorFade(ImageTutorial.Fill, -20%)
+            Width: =LookUp(NavigationGallery.AllItems, Step = _guideStep).Width
+            X: =LookUp(NavigationGallery.AllItems, Step = _guideStep).X
+            Y: =LookUp(NavigationGallery.AllItems, Step = _guideStep).Y
+            ZIndex: =2
+
+        iconTextbox As icon.Message:
+            Color: =Color.White
+            DisabledFill: =iconTextbox.Fill
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =iconTextbox.BorderColor
+            Height: =768
+            HoverBorderColor: =ColorFade(iconTextbox.BorderColor, 20%)
+            HoverColor: =ColorFade(iconTextbox.Color, 20%)
+            HoverFill: =iconTextbox.Fill
+            Icon: =Icon.Message
+            PressedBorderColor: =ColorFade(iconTextbox.BorderColor, -20%)
+            PressedColor: =ColorFade(iconTextbox.Color, -20%)
+            PressedFill: =iconTextbox.Fill
+            Visible: =_guideStep = 2
+            Width: =683
+            X: =683
+            ZIndex: =10
+
+        Label5 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =Label5.BorderColor
+            Height: =290
+            HoverBorderColor: =Label5.BorderColor
+            HoverColor: =Label5.Color
+            HoverFill: =Label5.Fill
+            PressedBorderColor: =Label5.BorderColor
+            PressedColor: =Label5.Color
+            PressedFill: =Label5.Fill
+            Size: =19
+            Text: ="You were amazing to work with at last week’s conference... I really appreciate the innovative and creative ideas you brought to the table when we needed it most - Hope to work with you again at next year’s conference!"
+            Visible: =_guideStep = 2
+            Width: =414
+            X: =860
+            Y: =155
+            ZIndex: =11
+
+        RecipientLabel_1 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =RecipientLabel_1.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =25
+            HoverBorderColor: =RecipientLabel_1.BorderColor
+            HoverColor: =RecipientLabel_1.Color
+            HoverFill: =RecipientLabel_1.Fill
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            PressedBorderColor: =RecipientLabel_1.BorderColor
+            PressedColor: =RecipientLabel_1.Color
+            PressedFill: =RecipientLabel_1.Fill
+            Size: =18
+            Text: ="Recipient"
+            Visible: =_guideStep = 4
+            Width: =108
+            X: =1204
+            Y: =566
+            ZIndex: =12
+
+        ManagerLabel_1 As label:
+            Align: =Align.Center
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =ManagerLabel_1.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =89
+            HoverBorderColor: =ManagerLabel_1.BorderColor
+            HoverColor: =ManagerLabel_1.Color
+            HoverFill: =ManagerLabel_1.Fill
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            PressedBorderColor: =ManagerLabel_1.BorderColor
+            PressedColor: =ManagerLabel_1.Color
+            PressedFill: =ManagerLabel_1.Fill
+            Size: =18
+            Text: |-
+                ="Recipient’s 
+                Manager"
+            Visible: =_guideStep = 4
+            Width: =148
+            X: =1183
+            Y: =326
+            ZIndex: =13
+
+        ManagerImage_1 As icon.Person:
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledFill: =ManagerImage_1.Fill
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =ManagerImage_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =120
+            HoverBorderColor: =ColorFade(ManagerImage_1.BorderColor, 20%)
+            HoverColor: =ColorFade(ManagerImage_1.Color, 20%)
+            HoverFill: =ManagerImage_1.Fill
+            Icon: =Icon.Person
+            PressedBorderColor: =ColorFade(ManagerImage_1.BorderColor, -20%)
+            PressedColor: =ColorFade(ManagerImage_1.Color, -20%)
+            PressedFill: =ManagerImage_1.Fill
+            Visible: =_guideStep = 4
+            Width: =120
+            X: =1194
+            Y: =218
+            ZIndex: =14
+
+        RecipientImage_1 As icon.Person:
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledFill: =RecipientImage_1.Fill
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =RecipientImage_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =120
+            HoverBorderColor: =ColorFade(RecipientImage_1.BorderColor, 20%)
+            HoverColor: =ColorFade(RecipientImage_1.Color, 20%)
+            HoverFill: =RecipientImage_1.Fill
+            Icon: =Icon.Person
+            PressedBorderColor: =ColorFade(RecipientImage_1.BorderColor, -20%)
+            PressedColor: =ColorFade(RecipientImage_1.Color, -20%)
+            PressedFill: =RecipientImage_1.Fill
+            Visible: =_guideStep = 4
+            Width: =120
+            X: =1194
+            Y: =437
+            ZIndex: =15
+
+        iconEnvelope1_1 As icon.Mail:
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledFill: =iconEnvelope1_1.Fill
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =iconEnvelope1_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =77
+            HoverBorderColor: =ColorFade(iconEnvelope1_1.BorderColor, 20%)
+            HoverColor: =ColorFade(iconEnvelope1_1.Color, 20%)
+            HoverFill: =iconEnvelope1_1.Fill
+            Icon: =Icon.Mail
+            PressedBorderColor: =ColorFade(iconEnvelope1_1.BorderColor, -20%)
+            PressedColor: =ColorFade(iconEnvelope1_1.Color, -20%)
+            PressedFill: =iconEnvelope1_1.Fill
+            Visible: =_guideStep = 4
+            Width: =77
+            X: =1116
+            Y: =258
+            ZIndex: =16
+
+        iconEnvelope1 As icon.Mail:
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledFill: =iconEnvelope1.Fill
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =iconEnvelope1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =77
+            HoverBorderColor: =ColorFade(iconEnvelope1.BorderColor, 20%)
+            HoverColor: =ColorFade(iconEnvelope1.Color, 20%)
+            HoverFill: =iconEnvelope1.Fill
+            Icon: =Icon.Mail
+            PressedBorderColor: =ColorFade(iconEnvelope1.BorderColor, -20%)
+            PressedColor: =ColorFade(iconEnvelope1.Color, -20%)
+            PressedFill: =iconEnvelope1.Fill
+            Visible: =_guideStep = 4
+            Width: =77
+            X: =1116
+            Y: =477
+            ZIndex: =17
+

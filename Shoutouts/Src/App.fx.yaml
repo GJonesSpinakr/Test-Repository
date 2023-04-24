@@ -1,0 +1,147 @@
+App As appinfo:
+    BackEnabled: =false
+    OnError: =
+    OnStart: |-
+        =//Set your app's URL here so email recipients can open it directly from their email. Note you will need to grant them access to the app for them to use it
+        Set(_appURL, "https://web.powerapps.com/apps");
+        //example: microsoft.com
+        Set(_myDomain,Right(User().Email, Len(User().Email) - Find("@", User().Email)));
+        Concurrent(
+            ClearCollect(AllGuideSteps, 
+                {Step:1, Text: "Use Shoutouts to tell your colleagues how awesome they are!", Image: 'screenshot-intro-1', X: 770, Y: 137, Width: 511, Height: 494, icon:'shoutouts-icon-ec-24'}, 
+                {Step:2, Text: "Shoutout messages can be read by everyone in the activity feed", Image: 'icons-8-quote-left-50-px-1@2x', X:801, Y: 181, Width: 46, Height: 36, icon: 'activity-f-106'}, 
+                {Step:3, Text: "Send pictures to enhance your Shoutouts!", Image: 'screenshot-intro-3', X:770, Y: 137, Width: 511, Height: 536}, 
+                {Step:4, Text: "Shoutouts are emailed to the recipient and their manager", Image: 'phone-image_1', X:770, Y: 137, Width: 237, Height: 513}),
+            Set(_guideStep, 1),
+        
+            //add custom shout out types here to show up in app
+            ClearCollect(AllShoutOutTypes, 
+                {PrimaryId: 1, Type:"Helpful Feedback", Shoutout_Color: "#2E3192", Description: "The Helpful Feedback shoutout badge is given to the person who gave critical insight on another person's work.", Icon: 'badge-helpful-feedback-large@2x-grey', Icon_Color: 'badge-helpful-feedback-large@2x',Selected:false},
+                {PrimaryId: 2, Type:"New Perspective", Shoutout_Color: "#F69679", Description: "The New Perspective shoutout badge is given to the person who suggested a beneficially fresh view and/or direction to their teammates' work.", Icon: 'badge-new-perspective-large@2x-grey', Icon_Color: 'badge-new-perspective-large@2x',Selected:false},
+                {PrimaryId: 3, Type:"Innovative", Shoutout_Color: "#7DA7D9", Description: "The Innovative shoutout badge is given to the person who thought outside the box to reach a solution.", Icon: 'badge-innovative-large@2x-grey', Icon_Color: 'badge-innovative-large@2x',Selected:false},
+                {PrimaryId: 4, Type:"Extra Mile", Shoutout_Color: "#DBA103", Description: "The Extra Mile shoutout badge is given to the person who made the extra effort to go above and beyond expectations in order to meet their goals.", Icon: 'badge-extra-mile-large@2x-grey', Icon_Color: 'badge-extra-mile-large@2x',Selected:false},
+                {PrimaryId: 5, Type:"Persistence", Shoutout_Color: "#F26D7D", Description: "The Persistence shoutout badge is given to the person who stayed the course in spite of difficulty or opposition.", Icon: 'badge-persistence-large@2x-grey', Icon_Color: 'badge-persistence-large@2x',Selected:false},
+                {PrimaryId: 6, Type:"Thank You", Shoutout_Color: "#00BFF3", Description: "The Thank You shoutout badge is given to the person who deserves the utmost appreciation for the work they have done.", Icon: 'badge-thank-you-large@2x-grey', Icon_Color: 'badge-thank-you-large@2x',Selected:false},
+                {PrimaryId: 7, Type:"Team Player", Shoutout_Color: "#82CA9C", Description: "The Team Player shoutout badge is given to the person who best exemplified excellence in collaboration with their fellow team members.", Icon: 'badge-team-player-large@2x-grey', Icon_Color: 'badge-team-player-large@2x',Selected:false},
+                {PrimaryId: 8, Type:"Problem Solver", Shoutout_Color: "#A0410D", Description: "The Problem Solver shoutout badge is given to the person who solved problems that were previously deemed unsolvable.", Icon: 'badge-problem-solver-large@2x-grey', Icon_Color: 'badge-problem-solver-large@2x',Selected:false},
+                {PrimaryId: 9, Type:"Expertise", Shoutout_Color: "#F49AC1", Description: "The Expertise shoutout badge is given to the person who demonstrated a wealth of knowledge in a particular field.", Icon: 'badge-expertise-large@2x-grey', Icon_Color: 'badge-expertise-large@2x',Selected:false},
+                {PrimaryId: 10, Type:"Customer Advocate", Shoutout_Color: "#8781BD", Description: "The Customer Advocate shoutout badge is given to the person who focused on the customer's needs, enabling their teams to become more customer-centric.", Icon: 'badge-customer-advocate-large@2x-grey', Icon_Color: 'badge-customer-advocate-large@2x',Selected:false}),
+            //items for progress bar on new shout out creation pages
+            ClearCollect(ProgressBarData, 
+                {Step: 1, Value:"Search person"}, 
+                {Step: 2, Value:"Select Shoutout"}, 
+                {Step: 3, Value: "Add a message"}, 
+                {Step: 4, Value: "Review"}),
+        
+            //presets the left menu selection in ActivityFeedScreen
+            Set(_activityFeedFilter, {Row: 1, Tab: "Activity", ImageSelected: 'activity-f-106', ImageUnselected: 'activity-icon-blue'}),
+            Set(_myProfile, Office365Users.MyProfile());
+            ClearCollect(MyRelevantPeopleTemp, Office365Users.RelevantPeople(_myProfile.Id).value);
+            //Renames all the RelevantPeople columns from camelCase to PascalCase, adds an IsInternal column to determine if the person is a fellow employee or outside the org, and drops unused columns like birthday, personNotes, etc.
+            ClearCollect(MyRelevantPeople, DropColumns(AddColumns(AddColumns(RenameColumns(MyRelevantPeopleTemp, "displayName", "DisplayName", "jobTitle", "JobTitle", "userPrincipalName", "UserPrincipalName", "givenName", "GivenName", "id", "Id"), "Mail", First(scoredEmailAddresses).address, "isInternal", Trim(Lower(companyName)) = Trim(Lower(_myProfile.CompanyName)) || Lower(_myDomain) = Lower(Right(UserPrincipalName, Len(UserPrincipalName) - Find("@", UserPrincipalName)))), "Photo", If(isInternal && Office365Users.UserPhotoMetadata(Id).HasPhoto, Office365Users.UserPhoto(Id), 'profilepic-generic-user')), "birthday", "companyName", "department", "imAddress", "isFavorite", "officeLocation", "personNotes", "phones", "profession", "scoredEmailAddresses"));
+            Set(_myProfilePhoto, If(Office365Users.UserPhotoMetadata(_myProfile.Id).HasPhoto, Office365Users.UserPhoto(_myProfile.Id), 'profilepic-generic-user'));
+        
+        
+           //Email template for Shoutout email
+          ClearCollect(Templates, 
+                 {Template: "Email", Value: 
+                "<html>
+        
+        <head>
+            <meta http-equiv=""Content-Type"" content=""text/html; charset=us-ascii"">
+            <meta http-equiv=""Cache-Control"" content=""no-siteapp"">
+            <meta name=""viewport"" content=""width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"">
+            <style type=""style/css"">
+                table, table td {border-collapse: collapse;}
+            </style>
+            <link href=""http://fonts.font.im/css?family=Open&#43;Sans:400,400italic,700"" rel=""stylesheet"" type=""text/css"">
+        </head>
+        
+        <body>
+            <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""640"" style=""background:#4d4d4d;"">
+                <tr>
+        
+                    <td width=""547"" height=""80"" style='font-family: ""Open Sans"", sans-serif;color:white;font-weight: bold;text-align: Center;font-size:24px;mso-fareast-font-family:""Open Sans"";border-collapse: collapse;'>Shoutouts</td>
+                </tr>
+            </table>
+            <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""640"">
+                <tr>
+                    <td colspan=""2"">
+                        <table border=""0"" cellpadding=""0"" cellspacing=""0"">
+                            <tr>
+                                <td width=""20""></td>
+                                <td height=""110"" width=""600"" style='font-family: ""Open Sans"", sans-serif;text-align: left;font-size:24px;mso-fareast-font-family:""Open Sans"";'>
+                                    Hi {0},
+                                </td>
+                                <td width=""20""></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td width=""600"" style='font-family: ""Open Sans"", sans-serif;text-align: left;font-size:24px;mso-fareast-font-family:""Open Sans"";mso-line-height-rule:exactly;line-height:36px;'>
+                                    Congratulations! Your colleague {1} has sent you {2} <b>{3}</b> shoutout. To view it, open the Shoutouts app.
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td height=""40""></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+                                        <tr>
+                                            <td width=""209"">
+                                            </td>
+                                            <td width=""180"" height=""34"" style='font-family: ""Open Sans"", sans-serif;mso-fareast-font-family:""Open Sans"";text-align:center;border: solid 1px #b7b7b7;font-size: 14px; font-weight: bold;border-radius: 5px;'>
+                                                <a href={4} style=""text-decoration:none;color: #4d4d4d;"">Open Shoutouts</a>
+                                            </td>
+                                            <td width=""209"">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td height=""96""></td>
+                                <td>
+                                    <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+                                        <tr>
+                                            <td width=""28"">
+                                            </td>
+                                            <td width=""544"" height=""96"" style=""border-bottom:1px solid #cccccc;"">
+                                            </td>
+                                            <td width=""28"">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td height=""28""></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td width=""600"" style=""
+                                font-size: 16px;
+                                line-height: 24px;
+                                font-style: italic;
+                                margin-top:30px;mso-line-height-rule:exactly;"">
+                                    The Shoutouts app allows you to recognize and appreciate your peers across the company. Try it today! Download and install the PowerApps player from your app store.
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        
+        </html>"}
+            )
+        );Set(_activeGuideStep, First(NavigationGallery.AllItems));
+        Set(_myManager, Office365Users.Manager(_myProfile.Id));
+        ClearCollect(Shoutout,
+            {Message: "Your feedback was very helpful!", CreatedOnDateTime: DateAdd(Now(), -7, TimeUnit.Days), CreatorEmail: _myManager.UserPrincipalName, CreatorName: _myManager.DisplayName, RecipientEmail: _myProfile.UserPrincipalName, RecipientName: _myProfile.DisplayName, ShoutoutType: "Helpful Feedback", Image: Edu16_Staff_07, Id: "Example", PrimaryID: "1"})
+

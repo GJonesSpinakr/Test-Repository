@@ -1,0 +1,245 @@
+SendConfirmationScreen As screen:
+    Height: =Max(App.Height, App.DesignHeight)
+    OnVisible: |-
+        =If(_sendShoutout,
+            Concurrent(
+                // Set dynamic values for placeholders in email template
+                ClearCollect(TemplateData,
+                    {Field: "{0}", Data:_selectedUser.DisplayName}, 
+                    {Field: "{1}", Data:_myProfile.DisplayName}, 
+                    {Field: "{2}", Data: If(IsMatch(_selectedShoutout.Type, "[AEIOUaeiou]", MatchOptions.BeginsWith), "an ", "a ")},
+                    {Field: "{3}", Data: Upper(_selectedShoutout.Type)}, 
+                    {Field: "{4}", Data: Upper(_appURL)}
+                ),
+                // Write to data source
+                Patch(Shoutout, Defaults(Shoutout),
+                    {
+                        CreatorEmail: _myProfile.UserPrincipalName, 
+                        PrimaryID: Value(Text(Now(), "[$-en-US]yyyymmddhhmmss")), 
+                        CreatedOnDateTime: Now(), 
+                        ShoutoutType: _selectedShoutout.Type, 
+                        RecipientEmail: _selectedUser.UserPrincipalName, 
+                        Image: UploadedImage1.Image, 
+                        CreatorName: _myProfile.DisplayName, 
+                        RecipientName: _selectedUser.DisplayName, 
+                        Message: MessageInputBox.Text
+                    }
+                ),
+        
+                // Set email recipients. If shoutout recipient isn't internal, don't search for or include their manager
+                Set(_emailRecipients, _selectedUser.UserPrincipalName & 
+                    If(_selectedUser.isInternal || Lower(_selectedUser.CompanyName) = Lower(_myProfile.CompanyName), 
+                        ";" & Office365Users.Manager(_selectedUser.UserPrincipalName).UserPrincipalName
+                    )
+                )
+            );
+        
+            // Replace placeholders in email template with dynamic values created above
+            ForAll(TemplateData, Patch(Templates, LookUp(Templates, Template="Email"), {Value: Substitute(LookUp(Templates, Template="Email").Value, Field, Data)}));
+        
+            // If an image was uploaded with the Shoutout, include it as an attachment
+            If(IsBlank(UploadedImage1.Image),
+                Office365.SendEmailV2(_emailRecipients, "Shoutout!", LookUp(Templates, Template="Email").Value, {Importance: "Normal"}),
+                Office365.SendEmailV2(_emailRecipients, "Shoutout!", LookUp(Templates, Template="Email").Value, 
+                    {
+                        Attachments: 
+                            Table(
+                                {
+                                    Name: "ShoutoutAttachment.jpg", 
+                                    ContentBytes: UploadedImage1.Image, 
+                                    '@odata.type': ""
+                                }
+                            ), 
+                        Importance: "Normal"
+                    }
+                )
+            );
+                Set(_sendShoutout, false);
+        
+            // Resetting Email Template after email has been sent
+            ClearCollect(Templates, 
+                {
+                    Template: "Email", 
+                    Value: 
+                    "<html>
+                    <head>
+                        <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+                        <meta http-equiv='Cache-Control' content='no-siteapp'>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no'>
+                        <style type='style/css'>
+                            table, table td {border-collapse: collapse;}
+                        </style>
+                        <link href='http://fonts.font.im/css?family=Open&#43;Sans:400,400italic,700' rel='stylesheet' type='text/css'>
+                    </head>
+        
+                    <body>
+                        <table border='0' cellpadding='0' cellspacing='0' width='640' style='background:#4d4d4d;'>
+                            <tr>
+        
+                                <td width='547' height='80' style='font-family: 'Open Sans', sans-serif;color:white;font-weight: bold;text-align: Center;font-size:24px;mso-fareast-font-family:'Open Sans';border-collapse: collapse;'>Shoutouts</td>
+                            </tr>
+                        </table>
+                        <table border='0' cellpadding='0' cellspacing='0' width='640'>
+                            <tr>
+                                <td colspan='2'>
+                                    <table border='0' cellpadding='0' cellspacing='0'>
+                                        <tr>
+                                            <td width='20'></td>
+                                            <td height='110' width='600' style='font-family: 'Open Sans', sans-serif;text-align: left;font-size:24px;mso-fareast-font-family:'Open Sans';'>
+                                                Hi {0},
+                                            </td>
+                                            <td width='20'></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td width='600' style='font-family: 'Open Sans', sans-serif;text-align: left;font-size:24px;mso-fareast-font-family:'Open Sans';mso-line-height-rule:exactly;line-height:36px;'>
+                                                Congratulations! Your colleague {1} has sent you {2} <b>{3}</b> shoutout. To view it, open the Shoutouts app.
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td height='40'></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+                                                    <tr>
+                                                        <td width='209'>
+                                                        </td>
+                                                        <td width='180' height='34' style='font-family: 'Open Sans', sans-serif;mso-fareast-font-family:'Open Sans';text-align:center;border: solid 1px #b7b7b7;font-size: 14px; font-weight: bold;border-radius: 5px;'>
+                                                            <a href={4} style='text-decoration:none;color: #4d4d4d;'>Open Shoutouts</a>
+                                                        </td>
+                                                        <td width='209'>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td height='96'></td>
+                                            <td>
+                                                <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+                                                    <tr>
+                                                        <td width='28'>
+                                                        </td>
+                                                        <td width='544' height='96' style='border-bottom:1px solid #cccccc;'>
+                                                        </td>
+                                                        <td width='28'>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td height='28'></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td width='600' style='
+                                            font-size: 16px;
+                                            line-height: 24px;
+                                            font-style: italic;
+                                            margin-top:30px;mso-line-height-rule:exactly;'>
+                                                The Shoutouts app allows you to recognize and appreciate your peers across the company. Try it today! Download and install the PowerApps player from your app store.
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                    </html>"
+                }
+            )
+        )
+    Orientation: =If(SendConfirmationScreen.Width < SendConfirmationScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= SendConfirmationScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    IconConfirm2 As circle:
+        AccessibleLabel: ="Confirmation"
+        BorderColor: =RGBA(0, 100, 142, 1)
+        BorderThickness: =6
+        DisabledFill: =IconConfirm2.Fill
+        Fill: =RGBA(62,96,170,0)
+        FocusedBorderColor: =IconConfirm2.BorderColor
+        HoverFill: =IconConfirm2.Fill
+        OnSelect: =
+        PressedFill: =IconConfirm2.Fill
+        X: =Parent.Width / 2 - IconConfirm2.Width / 2
+        Y: =Parent.Height / 2 - IconConfirm2.Height / 2 - 60
+        ZIndex: =1
+
+    IconConfirm1 As icon.Check:
+        AccessibleLabel: ="Confirmation"
+        BorderColor: =RGBA(0, 174, 239, 1)
+        Color: =RGBA(0, 100, 142, 1)
+        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+        DisabledColor: =RGBA(244, 244, 244, 1)
+        DisabledFill: =IconConfirm1.Fill
+        FocusedBorderColor: =IconConfirm1.BorderColor
+        Height: =IconConfirm2.Height
+        HoverBorderColor: =ColorFade(IconConfirm1.BorderColor, 20%)
+        HoverColor: =ColorFade(IconConfirm1.Color, 20%)
+        HoverFill: =IconConfirm1.Fill
+        Icon: =Icon.Check
+        OnSelect: =
+        PaddingBottom: =15
+        PaddingLeft: =15
+        PaddingRight: =15
+        PaddingTop: =15
+        PressedBorderColor: =ColorFade(IconConfirm1.BorderColor, -20%)
+        PressedColor: =ColorFade(IconConfirm1.Color, -20%)
+        PressedFill: =IconConfirm1.Fill
+        Width: =IconConfirm2.Width
+        X: =IconConfirm2.X
+        Y: =IconConfirm2.Y
+        ZIndex: =2
+
+    Label4 As label:
+        Align: =LayoutAlignItems.Center
+        FocusedBorderColor: =Label4.BorderColor
+        FontWeight: =FontWeight.Bold
+        Height: =50
+        HoverBorderColor: =Label4.BorderColor
+        HoverColor: =Label4.Color
+        HoverFill: =Label4.Fill
+        Live: =Live.Polite
+        PressedBorderColor: =Label4.BorderColor
+        PressedColor: =Label4.Color
+        PressedFill: =Label4.Fill
+        Size: =18
+        Text: =If(_sendShoutout, "Sending your Shoutout...", "Your Shoutout has been sent!")
+        Width: =485
+        X: =440
+        Y: =440
+        ZIndex: =3
+
+    icon9_7 As icon.Cancel:
+        AccessibleLabel: ="Close"
+        Color: =Color.Black
+        DisabledFill: =icon9_7.Fill
+        FocusedBorderColor: =icon9_7.BorderColor
+        HoverBorderColor: =ColorFade(icon9_7.BorderColor, 20%)
+        HoverColor: =ColorFade(icon9_7.Color, 20%)
+        HoverFill: =icon9_7.Fill
+        Icon: =Icon.Cancel
+        OnSelect: =Navigate(ActivityFeedScreen, BorderStyle.None)
+        PaddingBottom: =10
+        PaddingLeft: =10
+        PaddingRight: =10
+        PaddingTop: =10
+        PressedBorderColor: =ColorFade(icon9_7.BorderColor, -20%)
+        PressedColor: =ColorFade(icon9_7.Color, -20%)
+        PressedFill: =icon9_7.Fill
+        TabIndex: =0
+        Tooltip: =icon9_7.AccessibleLabel
+        Visible: =!_sendShoutout
+        X: =1282
+        Y: =18
+        ZIndex: =4
+

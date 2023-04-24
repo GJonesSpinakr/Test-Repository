@@ -1,0 +1,96 @@
+DeleteConfirmationScreen As screen:
+    Fill: =RGBA(0,0,0,.4)
+    Height: =Max(App.Height, App.DesignHeight)
+    Orientation: =If(DeleteConfirmationScreen.Width < DeleteConfirmationScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= DeleteConfirmationScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Rectangle6 As rectangle:
+        DisabledFill: =Rectangle6.Fill
+        Fill: =Color.White 
+        FocusedBorderColor: =Rectangle6.BorderColor
+        Height: =354
+        HoverFill: =Rectangle6.Fill
+        PressedFill: =Rectangle6.Fill
+        Width: =300
+        X: =Parent.Width / 2 - Rectangle6.Width / 2
+        Y: =Parent.Height / 2 - Rectangle6.Height / 2
+        ZIndex: =2
+
+    icon7 As icon.Trash:
+        Color: =RGBA(0, 123, 182, 1)
+        DisabledFill: =icon7.Fill
+        FocusedBorderColor: =icon7.BorderColor
+        Height: =82
+        HoverBorderColor: =ColorFade(icon7.BorderColor, 20%)
+        HoverColor: =ColorFade(icon7.Color, 20%)
+        HoverFill: =icon7.Fill
+        Icon: =Icon.Trash
+        OnSelect: =
+        PressedBorderColor: =ColorFade(icon7.BorderColor, -20%)
+        PressedColor: =ColorFade(icon7.Color, -20%)
+        PressedFill: =icon7.Fill
+        Width: =82
+        X: =642
+        Y: =255
+        ZIndex: =3
+
+    Button4 As button:
+        BorderColor: =ColorFade(Button4.Fill, -15%)
+        DisabledBorderColor: =ColorFade(Button4.BorderColor, 70%)
+        Fill: =RGBA(0, 123, 182, 1)
+        FocusedBorderColor: =Button4.BorderColor
+        HoverBorderColor: =ColorFade(Button4.BorderColor, 20%)
+        HoverColor: =Button4.Color
+        HoverFill: =ColorFade(Button4.Fill, 20%)
+        OnSelect: |-
+            =Set(_deletingShoutout, true);
+            Remove(Shoutout, _shoutoutToDelete);
+            Back()
+        PressedBorderColor: =Button4.Fill
+        PressedColor: =Button4.Fill
+        PressedFill: =Button4.Color
+        Size: =11
+        Text: =Upper("Yes, delete")
+        Width: =120
+        X: =623
+        Y: =430
+        ZIndex: =4
+
+    Button4_1 As button:
+        BorderColor: =ColorFade(Button4_1.Fill, -15%)
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledBorderColor: =ColorFade(Button4_1.BorderColor, 70%)
+        Fill: =Color.White
+        FocusedBorderColor: =Button4_1.BorderColor
+        HoverBorderColor: =ColorFade(Button4_1.BorderColor, 20%)
+        HoverColor: =Button4_1.Color
+        HoverFill: =ColorFade(Button4_1.Fill, 20%)
+        OnSelect: =Back()
+        PressedBorderColor: =Button4_1.Fill
+        PressedColor: =Button4_1.Fill
+        PressedFill: =Button4_1.Color
+        Size: =11
+        Text: =Upper("Cancel")
+        Width: =120
+        X: =623
+        Y: =484
+        ZIndex: =5
+
+    Label21 As label:
+        Align: =LayoutAlignItems.Center
+        FocusedBorderColor: =Label21.BorderColor
+        Height: =53
+        HoverBorderColor: =Label21.BorderColor
+        HoverColor: =Label21.Color
+        HoverFill: =Label21.Fill
+        PressedBorderColor: =Label21.BorderColor
+        PressedColor: =Label21.Color
+        PressedFill: =Label21.Fill
+        Size: =13.5
+        Text: =If(_deletingShoutout, "Deleting the Shoutout...", "Are you sure you want to delete this Shoutout?")
+        Width: =250
+        X: =558
+        Y: =357
+        ZIndex: =6
+

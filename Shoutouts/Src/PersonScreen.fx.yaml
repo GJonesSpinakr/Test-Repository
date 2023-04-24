@@ -1,0 +1,991 @@
+PersonScreen As screen:
+    Height: =Max(App.Height, App.DesignHeight)
+    Orientation: =If(PersonScreen.Width < PersonScreen.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= PersonScreen.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Header_1 As groupContainer:
+        Height: =715
+        Width: =1366
+        ZIndex: =1
+
+        SearchInputBox_3 As text:
+            AccessibleLabel: ="Search users in your organization"
+            BorderColor: =RGBA(120, 120, 120, 1)
+            BorderThickness: =1
+            Clear: =true
+            Default: =
+            FocusedBorderColor: =SearchInputBox_3.BorderColor
+            FocusedBorderThickness: =1
+            Height: =SearchInputBox_2.Height
+            HintText: ="Search"
+            HoverFill: =SearchInputBox_3.Fill
+            OnChange: =
+            OnSelect: =
+            PaddingLeft: =40
+            PaddingRight: =0
+            PressedBorderColor: =SearchInputBox_3.HoverBorderColor
+            PressedColor: =SearchInputBox_3.Color
+            PressedFill: =SearchInputBox_3.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            TabIndex: =-1
+            Width: =SearchInputBox_2.Width
+            X: =SearchInputBox_2.X
+            Y: =SearchInputBox_2.Y
+            ZIndex: =1
+
+        RectHeader_1 As rectangle:
+            DisabledFill: =RectHeader_1.Fill
+            DisplayMode: =DisplayMode.View
+            Fill: =RGBA(40, 40, 40, 1)
+            FocusedBorderColor: =RectHeader_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =RectHeader.Height
+            HoverFill: =RectHeader_1.Fill
+            PressedFill: =RectHeader_1.Fill
+            Width: =Parent.Width
+            ZIndex: =2
+
+        PhotoLogo_1 As image:
+            ApplyEXIFOrientation: =false
+            FocusedBorderColor: =PhotoLogo_1.BorderColor
+            FocusedBorderThickness: =0
+            Height: =PhotoLogo.Height
+            HoverBorderColor: =ColorFade(PhotoLogo_1.BorderColor, 20%)
+            HoverFill: =ColorFade(PhotoLogo_1.Fill, 20%)
+            Image: ='shoutouts-icon-ec-24_1'
+            PressedBorderColor: =ColorFade(PhotoLogo_1.BorderColor, -20%)
+            PressedFill: =ColorFade(PhotoLogo_1.Fill, -20%)
+            Width: =PhotoLogo.Width
+            X: =PhotoLogo.X
+            Y: =PhotoLogo.Y
+            ZIndex: =3
+
+        ComboBoxUserSearch_1 As combobox:
+            AccessibleLabel: ="Search users in your organization"
+            BorderColor: =RGBA(120, 120, 120, 1)
+            ChevronBackground: =RectHeader.Fill
+            ChevronHoverBackground: =ComboBoxUserSearch_1.HoverFill
+            DisplayFields: =["DisplayName","JobTitle"]
+            FocusedBorderColor: =ComboBoxUserSearch_1.BorderColor
+            HoverBorderColor: =ColorFade(ComboBoxUserSearch_1.BorderColor, 15%)
+            HoverColor: =RGBA(255,255,255,1)
+            HoverFill: =ColorFade(ComboBoxUserSearch_1.ChevronBackground, 30%)
+            InputTextPlaceholder: ="Search"
+            IsSearchable: =false
+            Items: |-
+                =If(IsBlank(ComboBoxUserSearch_1.SearchText),
+                    Office365Users.SearchUser(),
+                    Office365Users.SearchUser({searchTerm: ComboBoxUserSearch_1.SearchText, top: 20})
+                )
+            MoreItemsButtonColor: =ComboBoxUserSearch_1.ChevronBackground
+            OnChange: |-
+                =If(!IsBlank(ComboBoxUserSearch_1.Selected.Id),
+                    Set(_selectedUser, ComboBoxUserSearch_1.Selected);
+                
+                    Set(_selectedUserPhoto, 
+                        If(!IsBlank(_selectedUser.Id) && Office365Users.UserPhotoMetadata(_selectedUser.Id).HasPhoto, 
+                            Office365Users.UserPhoto(_selectedUser.Id), 
+                            'profilepic-generic-user'
+                        )
+                    );
+                
+                    Reset(ComboBoxUserSearch_1);
+                    Navigate(PersonScreen, BorderStyle.None)
+                )
+            OnSelect: |-
+                =Collect(TemplateData, {Text: ComboBoxUserSearch_1.SearchText})
+            PaddingLeft: =5+ComboBoxUserSearch_1.Height
+            PressedBorderColor: =ComboBoxUserSearch_1.HoverBorderColor
+            PressedFill: =ColorFade(ComboBoxUserSearch_1.ChevronBackground,30%)
+            SearchFields: =["DisplayName","UserPrincipalName"]
+            SearchItems: =[]
+            SelectionFill: =BtnNext.Fill
+            SelectionTagColor: =ComboBoxUserSearch_1.HoverColor
+            SelectionTagFill: =ComboBoxUserSearch_1.HoverFill
+            SelectMultiple: =false
+            Template: =ListItemTemplate.Person
+            Width: =565
+            X: =(Parent.Width-ComboBoxUserSearch_1.Width)/2
+            Y: =20
+            ZIndex: =4
+
+        icon2_2 As icon.Information:
+            AccessibleLabel: ="Select to navigate to the intro screen"
+            Color: =Color.White
+            DisabledFill: =icon2_2.Fill
+            FocusedBorderColor: =icon2_2.BorderColor
+            Height: =iconInfo.Height
+            HoverBorderColor: =ColorFade(icon2_2.BorderColor, 20%)
+            HoverColor: =ColorFade(icon2_2.Color, 20%)
+            HoverFill: =icon2_2.Fill
+            Icon: =Icon.Information
+            OnSelect: =Navigate(IntroScreen, BorderStyle.None)
+            PressedBorderColor: =ColorFade(icon2_2.BorderColor, -20%)
+            PressedColor: =ColorFade(icon2_2.Color, -20%)
+            PressedFill: =icon2_2.Fill
+            TabIndex: =0
+            Width: =iconInfo.Width
+            X: =iconInfo.X
+            Y: =iconInfo.Y
+            ZIndex: =5
+
+        Label14_2 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =Label14_2.BorderColor
+            FocusedBorderThickness: =02
+            Height: =LblInfo.Height
+            HoverBorderColor: =Label14_2.BorderColor
+            HoverColor: =Label14_2.Color
+            HoverFill: =Label14_2.Fill
+            OnSelect: =Select(icon2_2)
+            PaddingLeft: =10
+            PressedBorderColor: =Label14_2.BorderColor
+            PressedColor: =Label14_2.Color
+            PressedFill: =Label14_2.Fill
+            Size: =12
+            Text: ="Info"
+            Width: =LblInfo.Width
+            X: =LblInfo.X
+            Y: =LblInfo.Y
+            ZIndex: =6
+
+        Circle3_1 As circle:
+            BorderColor: =Color.White
+            BorderThickness: =2
+            DisabledFill: =Circle3_1.Fill
+            Fill: =RGBA(0, 0, 0, 0)
+            FocusedBorderColor: =Circle3_1.BorderColor
+            Height: =CircleSendShoutout_1.Height
+            HoverFill: =Circle3_1.Fill
+            PressedFill: =Circle3_1.Fill
+            Width: =CircleSendShoutout_1.Width
+            X: =CircleSendShoutout_1.X
+            Y: =CircleSendShoutout_1.Y
+            ZIndex: =7
+
+        icon4_1 As icon.Add:
+            AccessibleLabel: ="Send a shout out"
+            Color: =Color.White
+            DisabledFill: =icon4_1.Fill
+            FocusedBorderColor: =icon4_1.BorderColor
+            Height: =Circle3_1.Height
+            HoverBorderColor: =ColorFade(icon4_1.BorderColor, 20%)
+            HoverColor: =ColorFade(icon4_1.Color, 20%)
+            HoverFill: =icon4_1.Fill
+            Icon: =Icon.Add
+            OnSelect: |
+                =Set(_newShoutoutStep, 1);
+                Navigate(SearchPersonScreen, BorderStyle.None)
+            PaddingBottom: =5
+            PaddingLeft: =5
+            PaddingRight: =5
+            PaddingTop: =5
+            PressedBorderColor: =ColorFade(icon4_1.BorderColor, -20%)
+            PressedColor: =ColorFade(icon4_1.Color, -20%)
+            PressedFill: =icon4_1.Fill
+            TabIndex: =0
+            Width: =Circle3_1.Width
+            X: =Circle3_1.X
+            Y: =Circle3_1.Y
+            ZIndex: =8
+
+        Label14_3 As label:
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =Label14_3.BorderColor
+            FocusedBorderThickness: =02
+            Height: =LblSend.Height
+            HoverBorderColor: =Label14_3.BorderColor
+            HoverColor: =Label14_3.Color
+            HoverFill: =Label14_3.Fill
+            OnSelect: =Select(icon2_2)
+            PaddingLeft: =10
+            PressedBorderColor: =Label14_3.BorderColor
+            PressedColor: =Label14_3.Color
+            PressedFill: =Label14_3.Fill
+            Size: =12
+            Text: ="Send Shoutout"
+            Width: =LblSend.Width
+            X: =LblSend.X
+            Y: =LblSend.Y
+            ZIndex: =9
+
+        GalleryUserSearch_1 As gallery.galleryVertical:
+            AccessibleLabel: ="Search users gallery"
+            BorderColor: =RGBA(204, 204, 204, 1)
+            BorderThickness: =1
+            DisabledBorderColor: =GalleryUserSearch_1.BorderColor
+            DisabledFill: =GalleryUserSearch_1.Fill
+            Fill: =Color.White
+            HoverBorderColor: =GalleryUserSearch_1.BorderColor
+            HoverFill: =GalleryUserSearch_1.Fill
+            Items: |-
+                =If(!IsBlank(Trim(SearchInputBox_3.Text)), Office365Users.SearchUser({searchTerm: Trim(SearchInputBox_3.Text), top: 20}))
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =GalleryUserSearch_1.BorderColor
+            OnSelect: |-
+                =Concurrent(
+                    Set(_selectedUser,ThisItem),
+                    Set(_selectedUserPhoto,ImageProfile.Image)
+                );
+                Reset(SearchInputBox_3);
+                Navigate(PersonScreen,BorderStyle.None)
+            PressedBorderColor: =GalleryUserSearch_1.BorderColor
+            PressedFill: =GalleryUserSearch_1.Fill
+            TemplatePadding: =10
+            TemplateSize: =50
+            Visible: =!IsBlank(Trim(SearchInputBox_3.Text))
+            Width: =563
+            X: =401
+            Y: =60
+            ZIndex: =10
+
+            Image8_1 As image:
+                AccessibleLabel: ="User image"
+                FocusedBorderColor: =Image8_1.BorderColor
+                Height: =50
+                HoverBorderColor: =ColorFade(Image8_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image8_1.Fill, 20%)
+                Image: =If(!IsBlank(ThisItem.Id) && Office365Users.UserPhotoMetadata(ThisItem.Id).HasPhoto, Office365Users.UserPhoto(ThisItem.Id), 'profilepic-generic-user')
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image8_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image8_1.Fill, -20%)
+                RadiusBottomLeft: =25
+                RadiusBottomRight: =25
+                RadiusTopLeft: =25
+                RadiusTopRight: =25
+                Width: =50
+                X: =10
+                ZIndex: =1
+
+            Label15_4 As label:
+                Color: =RGBA(0, 100, 142, 1)
+                FocusedBorderColor: =Label15_4.BorderColor
+                FocusedBorderThickness: =2
+                Height: =25
+                HoverBorderColor: =Label15_4.BorderColor
+                HoverColor: =Label15_4.Color
+                HoverFill: =Label15_4.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label15_4.BorderColor
+                PressedColor: =Label15_4.Color
+                PressedFill: =Label15_4.Fill
+                Size: =11
+                Text: =ThisItem.DisplayName
+                Width: =450
+                X: =80
+                ZIndex: =2
+
+            Label15_5 As label:
+                Color: =RGBA(100, 100, 100, 1)
+                FocusedBorderColor: =Label15_5.BorderColor
+                FocusedBorderThickness: =02
+                Height: =25
+                HoverBorderColor: =Label15_5.BorderColor
+                HoverColor: =Label15_5.Color
+                HoverFill: =Label15_5.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label15_5.BorderColor
+                PressedColor: =Label15_5.Color
+                PressedFill: =Label15_5.Fill
+                Size: =9.5
+                Text: =ThisItem.JobTitle
+                Width: =450
+                X: =80
+                Y: =25
+                ZIndex: =3
+
+        LabelHeader_1 As label:
+            Align: =TextPosition.Left
+            Color: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =LabelHeader_1.BorderColor
+            FontWeight: =FontWeight.Bold
+            Height: =80
+            HoverBorderColor: =LabelHeader_1.BorderColor
+            HoverColor: =LabelHeader_1.Color
+            HoverFill: =LabelHeader_1.Fill
+            PaddingTop: =1
+            PressedBorderColor: =LabelHeader_1.BorderColor
+            PressedColor: =LabelHeader_1.Color
+            PressedFill: =LabelHeader_1.Fill
+            Size: =18
+            Text: ="Shoutouts"
+            Width: =LabelHeader.Width
+            X: =LabelHeader.X
+            ZIndex: =11
+
+        icon5_4 As icon.Search:
+            Color: =RGBA(120, 120, 120, 1)
+            DisabledFill: =icon5_4.Fill
+            FocusedBorderColor: =icon5_4.BorderColor
+            Height: =40
+            HoverBorderColor: =ColorFade(icon5_4.BorderColor, 20%)
+            HoverColor: =ColorFade(icon5_4.Color, 20%)
+            HoverFill: =icon5_4.Fill
+            Icon: =Icon.Search
+            PaddingBottom: =8
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =8
+            PressedBorderColor: =ColorFade(icon5_4.BorderColor, -20%)
+            PressedColor: =ColorFade(icon5_4.Color, -20%)
+            PressedFill: =icon5_4.Fill
+            Width: =40
+            X: =SearchInputBox_3.X
+            Y: =SearchInputBox_3.Y
+            ZIndex: =12
+
+    LeftPane_1 As groupContainer:
+        Height: =LeftPane.Height
+        Width: =LeftPane.Width
+        Y: =80
+        ZIndex: =2
+
+        Image1_1 As image:
+            FocusedBorderColor: =Image1_1.BorderColor
+            Height: =80
+            HoverBorderColor: =ColorFade(Image1_1.BorderColor, 20%)
+            HoverFill: =ColorFade(Image1_1.Fill, 20%)
+            Image: =_myProfilePhoto
+            PressedBorderColor: =ColorFade(Image1_1.BorderColor, -20%)
+            PressedFill: =ColorFade(Image1_1.Fill, -20%)
+            RadiusBottomLeft: =45
+            RadiusBottomRight: =45
+            RadiusTopLeft: =45
+            RadiusTopRight: =45
+            Width: =80
+            X: =31
+            Y: =ImageMe.Y
+            ZIndex: =2
+
+        Label3_3 As label:
+            DisplayMode: =DisplayMode.View
+            FocusedBorderColor: =Label3_3.BorderColor
+            FontWeight: =FontWeight.Semibold
+            Height: =70
+            HoverBorderColor: =Label3_3.BorderColor
+            HoverColor: =Label3_3.Color
+            HoverFill: =Label3_3.Fill
+            PressedBorderColor: =Label3_3.BorderColor
+            PressedColor: =Label3_3.Color
+            PressedFill: =Label3_3.Fill
+            Size: =13.5
+            Text: =_myProfile.DisplayName
+            VerticalAlign: =VerticalAlign.Top
+            Width: =250
+            X: =127
+            Y: =LblMyName.Y
+            ZIndex: =3
+
+        RectSeparator_4 As rectangle:
+            DisabledFill: =RectSeparator_4.Fill
+            Fill: =RGBA(204, 204, 204, 1)
+            FocusedBorderColor: =RectSeparator_4.BorderColor
+            Height: =1
+            HoverFill: =RectSeparator_4.Fill
+            PressedFill: =RectSeparator_4.Fill
+            Width: =385
+            Y: =RectSeparator.Y
+            ZIndex: =4
+
+        GalleryActivityFilters_1 As gallery.galleryVertical:
+            AccessibleLabel: ="Activity feed filters"
+            Default: =_activityFeedFilter
+            DisabledBorderColor: =GalleryActivityFilters_1.BorderColor
+            DisabledFill: =GalleryActivityFilters_1.Fill
+            Height: =449
+            HoverBorderColor: =GalleryActivityFilters_1.BorderColor
+            HoverFill: =GalleryActivityFilters_1.Fill
+            Items: |-
+                =Table({Row: 1, Tab: "Activity", ImageSelected: 'activity-f-106', ImageUnselected: 'activity-icon-blue', Active: true}, {Row: 2, Tab: "Shoutouts to me", ImageSelected: 'group-black-left', ImageUnselected: 'group-blue-left', Active: false}, {Row: 3, Tab: "Shoutouts from me", ImageSelected: 'group-black-right', ImageUnselected: 'group-blue-right', Active: false})
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =GalleryActivityFilters_1.BorderColor
+            OnSelect: |-
+                =Set(_activityFeedFilter, ThisItem);
+                Navigate(ActivityFeedScreen, BorderStyle.None)
+            PressedBorderColor: =GalleryActivityFilters_1.BorderColor
+            PressedFill: =GalleryActivityFilters_1.Fill
+            TemplatePadding: =0
+            TemplateSize: =70
+            Width: =Parent.Width
+            Y: =GalleryActivityFilters.Y
+            ZIndex: =5
+
+            RectSeparator_3 As rectangle:
+                DisabledFill: =RectSeparator_3.Fill
+                Fill: =RGBA(204, 204, 204, 1)
+                FocusedBorderColor: =RectSeparator_3.BorderColor
+                Height: =1
+                HoverFill: =RectSeparator_3.Fill
+                PressedFill: =RectSeparator_3.Fill
+                Width: =Parent.Width
+                Y: =69
+                ZIndex: =1
+
+            Label2_1 As label:
+                Align: =TextPosition.Left
+                Fill: =If(_activityFeedFilter.Row = ThisItem.Row, RGBA(255, 255, 255, 1), RGBA(241, 241, 241, 1))
+                FocusedBorderColor: =Label2_1.BorderColor
+                FocusedBorderThickness: =2
+                FontWeight: =FontWeight.Semibold
+                Height: =68.5
+                HoverBorderColor: =Label2_1.BorderColor
+                HoverColor: =Label2_1.Color
+                HoverFill: =Label2_1.Fill
+                OnSelect: =Select(Parent)
+                PaddingLeft: =125
+                PressedBorderColor: =Label2_1.BorderColor
+                PressedColor: =Label2_1.Color
+                PressedFill: =Label2_1.Fill
+                TabIndex: =0
+                Text: =ThisItem.Tab
+                Width: =Parent.Width
+                ZIndex: =2
+
+            Image2_1 As image:
+                AccessibleLabel: =ThisItem.Tab
+                FocusedBorderColor: =Image2_1.BorderColor
+                Height: =50
+                HoverBorderColor: =ColorFade(Image2_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image2_1.Fill, 20%)
+                Image: =If(_activityFeedFilter.Row = ThisItem.Row, ThisItem.ImageSelected, ThisItem.ImageUnselected)
+                OnSelect: =Select(Parent)
+                PaddingLeft: =If(ThisItem.ImageSelected = 'activity-f-106', 2)
+                PaddingRight: =If(ThisItem.ImageSelected = 'activity-f-106', 15)
+                PressedBorderColor: =ColorFade(Image2_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image2_1.Fill, -20%)
+                Width: =50
+                X: =37
+                Y: =10
+                ZIndex: =3
+
+        RectSeparator2_2 As rectangle:
+            DisabledFill: =RectSeparator2_2.Fill
+            Fill: =RGBA(200,200,200,1)
+            FocusedBorderColor: =RectSeparator2_2.BorderColor
+            Height: =688
+            HoverFill: =RectSeparator2_2.Fill
+            PressedFill: =RectSeparator2_2.Fill
+            Width: =2
+            X: =Parent.Width - RectSeparator2_2.Width
+            ZIndex: =6
+
+    MiddlePane_1 As groupContainer:
+        Height: =MiddlePane.Height
+        Width: =MiddlePane.Width
+        X: =MiddlePane.X
+        Y: =80
+        ZIndex: =3
+
+        Rectangle1_3 As rectangle:
+            DisabledFill: =Rectangle1_3.Fill
+            Fill: =Color.White
+            FocusedBorderColor: =Rectangle1_3.BorderColor
+            Height: =225
+            HoverFill: =Rectangle1_3.Fill
+            PressedFill: =Rectangle1_3.Fill
+            Width: =MiddlePane_1.Width
+            Y: =1
+            ZIndex: =1
+
+        Label17 As label:
+            Align: =LayoutAlignItems.Center
+            FocusedBorderColor: =Label17.BorderColor
+            FontWeight: =FontWeight.Bold
+            HoverBorderColor: =Label17.BorderColor
+            HoverColor: =Label17.Color
+            HoverFill: =Label17.Fill
+            PressedBorderColor: =Label17.BorderColor
+            PressedColor: =Label17.Color
+            PressedFill: =Label17.Fill
+            Size: =18
+            Text: =_selectedUser.DisplayName
+            Width: =Parent.Width
+            Y: =19
+            ZIndex: =2
+
+        Image9 As image:
+            FocusedBorderColor: =Image9.BorderColor
+            HoverBorderColor: =ColorFade(Image9.BorderColor, 20%)
+            HoverFill: =ColorFade(Image9.Fill, 20%)
+            Image: =_selectedUserPhoto
+            PressedBorderColor: =ColorFade(Image9.BorderColor, -20%)
+            PressedFill: =ColorFade(Image9.Fill, -20%)
+            RadiusBottomLeft: =50
+            RadiusBottomRight: =50
+            RadiusTopLeft: =50
+            RadiusTopRight: =50
+            X: =Parent.Width /2 - Image9.Width /2
+            Y: =70
+            ZIndex: =3
+
+        GalleryPersonActivityFeed As gallery.variableTemplateHeightGallery:
+            AccessibleLabel: =_selectedUser.DisplayName & "'s shout out activity"
+            DisabledBorderColor: =GalleryPersonActivityFeed.BorderColor
+            DisabledFill: =GalleryPersonActivityFeed.Fill
+            Fill: =Color.White
+            Height: =460
+            HoverBorderColor: =GalleryPersonActivityFeed.BorderColor
+            HoverFill: =GalleryPersonActivityFeed.Fill
+            Items: =Filter(Shoutout, If(_personTabSelection = "to", RecipientEmail, CreatorEmail) = _selectedUser.UserPrincipalName)
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =GalleryPersonActivityFeed.BorderColor
+            PressedBorderColor: =GalleryPersonActivityFeed.BorderColor
+            PressedFill: =GalleryPersonActivityFeed.Fill
+            TemplateSize: =200
+            Width: =MiddlePane_1.Width
+            Y: =228
+            ZIndex: =4
+
+            Label4_2 As label:
+                Color: =RGBA(100, 100, 100, 1)
+                FocusedBorderColor: =Label4_2.BorderColor
+                FocusedBorderThickness: =02
+                Height: =30
+                HoverBorderColor: =Label4_2.BorderColor
+                HoverColor: =Label4_2.Color
+                HoverFill: =Label4_2.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label4_2.BorderColor
+                PressedColor: =Label4_2.Color
+                PressedFill: =Label4_2.Fill
+                Size: =10.5
+                Text: =ThisItem.CreatedOnDateTime
+                Width: =250
+                X: =162
+                Y: =Sender_1.Y + Sender_1.Height
+                ZIndex: =1
+
+            Image3_2 As image:
+                AccessibleLabel: ="User image"
+                FocusedBorderColor: =Image3_2.BorderColor
+                Height: =80
+                HoverBorderColor: =ColorFade(Image3_2.BorderColor, 20%)
+                HoverFill: =ColorFade(Image3_2.Fill, 20%)
+                Image: |-
+                    =If(
+                        !IsMatch(ThisItem.RecipientEmail, Match.Email) || Right(ThisItem.RecipientEmail, Len(ThisItem.RecipientEmail) - Find("@", ThisItem.RecipientEmail)) <> _myDomain || !Office365Users.UserPhotoMetadata(ThisItem.RecipientEmail).HasPhoto, 'profilepic-generic-user', Office365Users.UserPhoto(ThisItem.RecipientEmail))
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image3_2.BorderColor, -20%)
+                PressedFill: =ColorFade(Image3_2.Fill, -20%)
+                RadiusBottomLeft: =40
+                RadiusBottomRight: =40
+                RadiusTopLeft: =40
+                RadiusTopRight: =40
+                Width: =80
+                X: =25
+                Y: =30
+                ZIndex: =4
+
+            Image4_2 As image:
+                AccessibleLabel: =ThisItem.ShoutoutType
+                FocusedBorderColor: =Image4_2.BorderColor
+                Height: =50
+                HoverBorderColor: =ColorFade(Image4_2.BorderColor, 20%)
+                HoverFill: =ColorFade(Image4_2.Fill, 20%)
+                Image: =LookUp(AllShoutOutTypes,ThisItem.ShoutoutType=Type).Icon_Color
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image4_2.BorderColor, -20%)
+                PressedFill: =ColorFade(Image4_2.Fill, -20%)
+                Width: =50
+                X: =79
+                Y: =Image3_2.Y + Image3_2.Height / 2 - Image4_2.Height / 2
+                ZIndex: =5
+
+            Image5_1 As image:
+                AccessibleLabel: ="Shout out image"
+                FocusedBorderColor: =Image5_1.BorderColor
+                Height: =200
+                HoverBorderColor: =ColorFade(Image5_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image5_1.Fill, 20%)
+                Image: =ThisItem.Image
+                ImagePosition: =ImagePosition.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image5_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image5_1.Fill, -20%)
+                Visible: =!IsBlank(ThisItem.Image) && ThisItem.Image in _shownImagesPerson
+                Width: =400
+                X: =Parent.TemplateWidth / 2 - Image5_1.Width / 2
+                ZIndex: =6
+
+            Button6_1 As button:
+                BorderColor: =ColorFade(Button6_1.Fill, -15%)
+                DisabledBorderColor: =ColorFade(Button6_1.BorderColor, 70%)
+                Fill: =RGBA(0, 123, 182, 1)
+                FocusedBorderColor: =Color.Black
+                Height: =30
+                HoverBorderColor: =ColorFade(Button6_1.BorderColor, 20%)
+                HoverColor: =Button6_1.Color
+                HoverFill: =ColorFade(Button6_1.Fill, 20%)
+                OnSelect: =If(ThisItem.Image in _shownImagesPerson, Set(_shownImagesPerson, Substitute(_shownImagesPerson, ThisItem.Image, "")), Set(_shownImagesPerson, _shownImagesPerson & ThisItem.Image))
+                PressedBorderColor: =Button6_1.Fill
+                PressedColor: =Button6_1.Fill
+                PressedFill: =Button6_1.Color
+                Size: =10
+                TabIndex: =If(GalleryUserSearch.Visible, -1, 0)
+                Text: =If(Image5_1.Visible, "Hide photo", "Show photo")
+                Visible: =!IsBlank(ThisItem.Image)
+                Width: =90
+                X: =Image3_2.X + Image3_2.Width / 2 - Button6_1.Width / 2
+                Y: =120
+                ZIndex: =7
+
+            Image6_1 As image:
+                AccessibleLabel: ="Image of quotation mark"
+                FocusedBorderColor: =Image6_1.BorderColor
+                Height: =27
+                HoverBorderColor: =ColorFade(Image6_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image6_1.Fill, 20%)
+                Image: ='leftdoublequote-e-9-b-2@3x'
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image6_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image6_1.Fill, -20%)
+                Width: =27
+                X: =Label4_2.X - 30
+                Y: =Label4_2.Y + Label4_2.Height + 5
+                ZIndex: =8
+
+            Label9_1 As label:
+                AutoHeight: =true
+                FocusedBorderColor: =Label9_1.BorderColor
+                FocusedBorderThickness: =02
+                HoverBorderColor: =Label9_1.BorderColor
+                HoverColor: =Label9_1.Color
+                HoverFill: =Label9_1.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label9_1.BorderColor
+                PressedColor: =Label9_1.Color
+                PressedFill: =Label9_1.Fill
+                Text: =ThisItem.Message
+                Width: =410
+                X: =Label4_2.X
+                Y: =Label4_2.Y + Label4_2.Height + 15
+                ZIndex: =9
+
+            RectSeparator_5 As rectangle:
+                DisabledFill: =RectSeparator_5.Fill
+                Fill: =RGBA(204, 204, 204, 1)
+                FocusedBorderColor: =RectSeparator_5.BorderColor
+                Height: =1
+                HoverFill: =RectSeparator_5.Fill
+                PressedFill: =RectSeparator_5.Fill
+                Width: =Parent.TemplateWidth - 40
+                X: =20
+                Y: =199
+                ZIndex: =10
+
+            Receiver_1 As label:
+                AutoHeight: =true
+                Color: =RGBA(0, 100, 142, 1)
+                FocusedBorderColor: =Color.Black
+                FocusedBorderThickness: =3
+                Font: =Font.Lato
+                Height: =49
+                HoverBorderColor: =Receiver_1.BorderColor
+                HoverColor: =Receiver_1.Color
+                HoverFill: =Receiver_1.Fill
+                OnSelect: |-
+                    =Concurrent(
+                        If(ThisItem.RecipientEmail in MyRelevantPeople.UserPrincipalName, Set(_selectedUser, LookUp(MyRelevantPeople, UserPrincipalName = ThisItem.RecipientEmail)), Set(_selectedUser, Office365Users.UserProfile(ThisItem.RecipientEmail))),
+                        Set(_selectedUserPhoto, ImageUser.Image));
+                    Navigate(PersonScreen, BorderStyle.None)
+                PressedBorderColor: =Receiver_1.BorderColor
+                PressedColor: =Receiver_1.Color
+                PressedFill: =Receiver_1.Fill
+                Size: =12
+                TabIndex: =If(GalleryUserSearch_1.Visible, -1, 0)
+                Text: =ThisItem.RecipientName & " received " & If(IsMatch(ThisItem.ShoutoutType, "[AEIOUaeiou]", MatchOptions.BeginsWith), "an ", "a ") & Upper(ThisItem.ShoutoutType)
+                Width: =356
+                X: =162
+                Y: =12
+                ZIndex: =11
+
+            Sender_1 As label:
+                AutoHeight: =true
+                Color: =RGBA(0, 100, 142, 1)
+                FocusedBorderColor: =Color.Black
+                FocusedBorderThickness: =3
+                Font: =Font.Lato
+                Height: =49
+                HoverBorderColor: =Sender_1.BorderColor
+                HoverColor: =Sender_1.Color
+                HoverFill: =Sender_1.Fill
+                OnSelect: |-
+                    =Concurrent(
+                        If(ThisItem.CreatorEmail in MyRelevantPeople.UserPrincipalName, Set(_selectedUser, LookUp(MyRelevantPeople, UserPrincipalName = ThisItem.CreatorEmail)), Set(_selectedUser, Office365Users.UserProfile(ThisItem.CreatorEmail))),
+                        If(ThisItem.CreatorEmail in MyRelevantPeople.UserPrincipalName, Set(_selectedUserPhoto, LookUp(MyRelevantPeople, UserPrincipalName = ThisItem.CreatorEmail).Photo), Office365Users.UserPhotoMetadata(ThisItem.CreatorEmail).HasPhoto, Set(_selectedUserPhoto, Office365Users.UserPhoto(ThisItem.CreatorEmail))));
+                    Navigate(PersonScreen, BorderStyle.None)
+                PressedBorderColor: =Sender_1.BorderColor
+                PressedColor: =Sender_1.Color
+                PressedFill: =Sender_1.Fill
+                Size: =12
+                TabIndex: =If(GalleryUserSearch_1.Visible, -1, 0)
+                Text: ="shoutout from " & ThisItem.CreatorName
+                Width: =356
+                X: =162
+                Y: =Receiver_1.Y + Receiver_1.Height
+                ZIndex: =12
+
+        RectSeparator_6 As rectangle:
+            DisabledFill: =RectSeparator_6.Fill
+            Fill: =RGBA(204, 204, 204, 1)
+            FocusedBorderColor: =RectSeparator_6.BorderColor
+            Height: =1
+            HoverFill: =RectSeparator_6.Fill
+            PressedFill: =RectSeparator_6.Fill
+            Width: =Parent.Width
+            Y: =GalleryPersonActivityFeed.Y - 1
+            ZIndex: =5
+
+        Button8 As button:
+            BorderColor: =If(_personTabSelection = "to", RGBA(204, 204, 204, 1), RGBA(0,0,0,0))
+            BorderThickness: =1
+            Color: =If(_personTabSelection = "to", Color.Black, RGBA(0, 100, 142, 1))
+            DisabledBorderColor: =ColorFade(Button8.BorderColor, 70%)
+            Fill: =If(_personTabSelection = "to", Color.White, RGBA(235,235,235, 1))
+            FocusedBorderColor: =Color.Black
+            FontWeight: =If(_personTabSelection = "to", FontWeight.Bold, FontWeight.Semibold)
+            Height: =If(_personTabSelection = "to", 40, 30)
+            HoverBorderColor: =ColorFade(Button8.BorderColor, 20%)
+            HoverColor: =Button8.Color
+            HoverFill: =ColorFade(Button8.Fill, 20%)
+            OnSelect: =Set(_personTabSelection, "to")
+            PressedBorderColor: =Button8.Fill
+            PressedColor: =Button8.Fill
+            PressedFill: =Button8.Color
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =11
+            Text: =Upper("To " & Left(_selectedUser.DisplayName, Find(" ",_selectedUser.DisplayName)))
+            Width: =220
+            X: =(Parent.Width - (Button8.Width + Button8_1.Width)) / 3
+            Y: =RectSeparator_6.Y - Button8.Height + 1
+            ZIndex: =6
+
+        Button8_1 As button:
+            BorderColor: =If(_personTabSelection = "from", RGBA(204, 204, 204, 1), RGBA(0,0,0,0))
+            BorderThickness: =1
+            Color: =If(_personTabSelection = "from", Color.Black, RGBA(0, 100, 142, 1))
+            DisabledBorderColor: =ColorFade(Button8_1.BorderColor, 70%)
+            Fill: =If(_personTabSelection = "from", Color.White, RGBA(235,235,235, 1))
+            FocusedBorderColor: =Color.Black
+            FontWeight: =If(_personTabSelection = "from", FontWeight.Bold, FontWeight.Semibold)
+            Height: =If(_personTabSelection = "from", 40, 30)
+            HoverBorderColor: =ColorFade(Button8_1.BorderColor, 20%)
+            HoverColor: =Button8_1.Color
+            HoverFill: =ColorFade(Button8_1.Fill, 20%)
+            OnSelect: =Set(_personTabSelection, "from")
+            PressedBorderColor: =Button8_1.Fill
+            PressedColor: =Button8_1.Fill
+            PressedFill: =Button8_1.Color
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =11
+            Text: =Upper("From " & Left(_selectedUser.DisplayName, Find(" ",_selectedUser.DisplayName)))
+            Width: =220
+            X: =Button8_1.Width + (2 * Button8.X)
+            Y: =RectSeparator_6.Y - Button8_1.Height + 1
+            ZIndex: =7
+
+        RectSeparator2_3 As rectangle:
+            DisabledFill: =RectSeparator2_3.Fill
+            Fill: =RGBA(200,200,200,1)
+            FocusedBorderColor: =RectSeparator2_3.BorderColor
+            Height: =688
+            HoverFill: =RectSeparator2_3.Fill
+            PressedFill: =RectSeparator2_3.Fill
+            Width: =2
+            X: =Parent.Width - RectSeparator2_3.Width
+            ZIndex: =8
+
+    RightPane_1 As groupContainer:
+        Height: =RightPane.Height
+        Width: =RightPane.Width
+        X: =RightPane.X
+        Y: =80
+        ZIndex: =4
+
+        Label15_3 As label:
+            FocusedBorderColor: =Label15_3.BorderColor
+            FontWeight: =FontWeight.Bold
+            Height: =Label15_1.Height
+            HoverBorderColor: =Label15_3.BorderColor
+            HoverColor: =Label15_3.Color
+            HoverFill: =Label15_3.Fill
+            PressedBorderColor: =Label15_3.BorderColor
+            PressedColor: =Label15_3.Color
+            PressedFill: =Label15_3.Fill
+            Size: =10.5
+            Text: ="TOP CONTACTS"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =Label15_1.Width
+            X: =Label15_1.X
+            Y: =Label15_1.Y
+            ZIndex: =1
+
+        GalleryTopContacts_1 As gallery.galleryVertical:
+            AccessibleLabel: ="Top contacts"
+            DisabledBorderColor: =GalleryTopContacts_1.BorderColor
+            DisabledFill: =GalleryTopContacts_1.Fill
+            Height: =613
+            HoverBorderColor: =GalleryTopContacts_1.BorderColor
+            HoverFill: =GalleryTopContacts_1.Fill
+            ItemAccessibleLabel: =ThisItem.DisplayName & " " & ThisItem.JobTitle
+            Items: =MyRelevantPeople
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =GalleryTopContacts_1.BorderColor
+            OnSelect: |-
+                =Set(_selectedUser, ThisItem);
+                Set(_selectedUserPhoto, ThisItem.Photo);
+                Navigate(PersonScreen, BorderStyle.None)
+            PressedBorderColor: =GalleryTopContacts_1.BorderColor
+            PressedFill: =GalleryTopContacts_1.Fill
+            TemplateFill: =RGBA(255, 255, 255, 1)
+            TemplatePadding: =10
+            TemplateSize: =100
+            Width: =Parent.Width - 10*2
+            X: =GalleryTopContacts.X
+            Y: =GalleryTopContacts.Y
+            ZIndex: =2
+
+            Rectangle3_1 As rectangle:
+                BorderColor: =RGBA(204, 204, 204, 1)
+                BorderThickness: =1
+                DisabledFill: =Rectangle3_1.Fill
+                Fill: =RGBA(0,0,0,0)
+                FocusedBorderColor: =Rectangle3_1.BorderColor
+                HoverFill: =Rectangle3_1.Fill
+                OnSelect: =Select(Parent)
+                PressedFill: =Rectangle3_1.Fill
+                Width: =347
+                ZIndex: =1
+
+            Image7_1 As image:
+                AccessibleLabel: ="User image"
+                FocusedBorderColor: =Image7_1.BorderColor
+                Height: =50
+                HoverBorderColor: =ColorFade(Image7_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image7_1.Fill, 20%)
+                Image: =ThisItem.Photo
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image7_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image7_1.Fill, -20%)
+                RadiusBottomLeft: =25
+                RadiusBottomRight: =25
+                RadiusTopLeft: =25
+                RadiusTopRight: =25
+                Width: =50
+                X: =23
+                Y: =17
+                ZIndex: =2
+
+            Label12_1 As label:
+                Color: =RGBA(0, 100, 142, 1)
+                FocusedBorderColor: =Label12_1.BorderColor
+                FocusedBorderThickness: =2
+                FontWeight: =FontWeight.Semibold
+                Height: =32
+                HoverBorderColor: =Label12_1.BorderColor
+                HoverColor: =Label12_1.Color
+                HoverFill: =Label12_1.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label12_1.BorderColor
+                PressedColor: =Label12_1.Color
+                PressedFill: =Label12_1.Fill
+                Size: =10.5
+                TabIndex: =0
+                Text: =ThisItem.DisplayName
+                Width: =Parent.TemplateWidth - Label12_1.X - 5
+                X: =89
+                Y: =8
+                ZIndex: =3
+
+            Label13_1 As label:
+                FocusedBorderColor: =Label13_1.BorderColor
+                FocusedBorderThickness: =02
+                Height: =27
+                HoverBorderColor: =Label13_1.BorderColor
+                HoverColor: =Label13_1.Color
+                HoverFill: =Label13_1.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Label13_1.BorderColor
+                PressedColor: =Label13_1.Color
+                PressedFill: =Label13_1.Fill
+                Size: =9
+                Text: =ThisItem.JobTitle
+                Width: =Parent.TemplateWidth - Label13_1.X - 5
+                X: =89
+                Y: =40
+                ZIndex: =4
+
+            Circle2_1 As circle:
+                AccessibleLabel: ="Send shout out"
+                BorderColor: =RGBA(0,123,182,1)
+                BorderThickness: =1
+                DisabledFill: =Circle2_1.Fill
+                Fill: =RGBA(0,0,0,0)
+                FocusedBorderColor: =Circle2_1.BorderColor
+                Height: =20
+                HoverFill: =Circle2_1.Fill
+                OnSelect: =Select(Label16_1)
+                PressedFill: =Circle2_1.Fill
+                Width: =20
+                X: =96
+                Y: =70
+                ZIndex: =5
+
+            icon1_2 As icon.Add:
+                AccessibleLabel: ="Send shout out"
+                Color: =Circle2_1.BorderColor
+                DisabledFill: =icon1_2.Fill
+                FocusedBorderColor: =icon1_2.BorderColor
+                Height: =Circle2_1.Height
+                HoverBorderColor: =ColorFade(icon1_2.BorderColor, 20%)
+                HoverColor: =ColorFade(icon1_2.Color, 20%)
+                HoverFill: =icon1_2.Fill
+                Icon: =Icon.Add
+                OnSelect: =Select(Label16_1)
+                PaddingBottom: =2
+                PaddingLeft: =2
+                PaddingRight: =2
+                PaddingTop: =2
+                PressedBorderColor: =ColorFade(icon1_2.BorderColor, -20%)
+                PressedColor: =ColorFade(icon1_2.Color, -20%)
+                PressedFill: =icon1_2.Fill
+                Width: =Circle2_1.Width
+                X: =Circle2_1.X
+                Y: =Circle2_1.Y - .5
+                ZIndex: =6
+
+            Label16_1 As label:
+                Color: =RGBA(0, 100, 142, 1)
+                FocusedBorderColor: =Label16_1.BorderColor
+                FocusedBorderThickness: =2
+                FontWeight: =FontWeight.Semibold
+                Height: =26
+                HoverBorderColor: =Label16_1.BorderColor
+                HoverColor: =Label16_1.Color
+                HoverFill: =Label16_1.Fill
+                OnSelect: |-
+                    =Concurrent(
+                        Set(_selectedUser, ThisItem),
+                        Set(_newShoutoutStep, 2));
+                    Navigate(SelectShoutoutScreen, BorderStyle.None)
+                PressedBorderColor: =Label16_1.BorderColor
+                PressedColor: =Label16_1.Color
+                PressedFill: =Label16_1.Fill
+                Size: =9
+                TabIndex: =0
+                Text: ="Send Shoutout"
+                X: =120
+                Y: =66
+                ZIndex: =7
+
