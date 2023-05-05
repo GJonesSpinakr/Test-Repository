@@ -28,8 +28,8 @@ on:
 env:
 #edit your values here
   ENVIRONMENT_URL: 'https://make.powerapps.com/e/f3647838-4ca2-e953-b998-5c5511431316/s/1dba99bd-b9ea-ed11-a7c6-000d3a4fe270/app/edit/87d63f29-baea-ed11-a7c6-000d3a4fe270'
-  CLIENT_ID: '<05f0a52d-08ae-413b-ae6a-481f1eb1741e>'
-  TENANT_ID: '<9c61f90c-3c90-4af6-953a-a2aafdc2cf96>'
+  CLIENT_ID: '05f0a52d-08ae-413b-ae6a-481f1eb1741e'
+  TENANT_ID: '9c61f90c-3c90-4af6-953a-a2aafdc2cf96'
 permissions:
   contents: write
 jobs:
